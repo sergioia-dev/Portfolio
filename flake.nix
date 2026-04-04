@@ -3,8 +3,8 @@
     === Portfolio Development Environment
 
     !!! Dev Environments
-    - Frontend => Environment
-    - Backend => Environment , Build and Run
+    - frontend => Environment
+    - backend => Environment
   '';
 
   inputs = {
@@ -17,27 +17,24 @@
   }: let
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages.${system};
-
-    commonTools = with pkgs; [
-      nodejs
-    ];
   in {
     # Environments
 
     # Backend
     devShells."${system}" = {
-      Backend = pkgs.mkShell {
-        buildInputs = with pkgs;
-          [
-            postgresql
-            typescript
-          ]
-          ++ commonTools;
+      backend = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          typescript
+          nodejs
+        ];
 
         shellHook = ''
-          echo "> Consider go to the folder back-end/ and install the dependencies if not installed"
-          echo "- npm install"
+          if [[ $(basename "$PWD") != "back-end" ]]; then
+            echo "You are not in the required folder 'back-end/'";
+            exit
+          else
           echo "==> Welcome to the Back-end Development Environment <=="
+          fi
         '';
 
         API_PORT = 5678;
@@ -46,80 +43,62 @@
       };
 
       # Frontend
-      Frontend = pkgs.mkShell {
-        buildInputs = [] ++ commonTools;
+      frontend = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          nodejs
+        ];
 
         shellHook = ''
-          echo "> Consider go to the folder front-end/ and install the dependencies if not installed"
-          echo "- npm install"
-          echo "==> Welcome to the Back-end Development Environment <=="
+          if [[ $(basename "$PWD") != "front-end" ]]; then
+            echo "You are not in the required folder 'front-end/'";
+            exit
+          else
+            echo "==> Welcome to the Front-end Development Environment <=="
+          fi
         '';
-      };
-    };
-
-    # Builds
-    packages."${system}" = {
-      Backend = pkgs.buildNpmPackage {
-        name = "portfolio-backend";
-        version = "0.0.1";
-        src = ./back-end;
-        npmDepsHash = "sha256-01uYVt7Y3DxMdUbJhkzqMeV/oz/APmpDaiZUQEjNY4s=";
-
-        # copies the build output to the Nix store
-        buildPhase = ''
-          npm run build
-        '';
-
-        installPhase = ''
-          mkdir -p $out
-          cp -r build package.json node_modules $out/
-        '';
-
-        nativeBuildInputs = with pkgs; [nodejs]; # Build Dependency
-
-        buildInputs = with pkgs; [nodejs]; # Runtime dependency
-
-        # doCheck = true;
-        # checkPhase = "npm run start";
       };
     };
 
     # Runnables
     apps."${system}" = {
-      Backend = {
-        type = "app";
-        program = let
-          backend = self.packages."${system}".Backend;
-          script = pkgs.writeShellScriptBin "run-backend-app" ''
-            cd ${backend}
-            exec npm run start
-          '';
-        in "${script}/bin/run-backend-app";
-      };
-
-      db-start = {
+      start-db = {
         type = "app";
         program = let
           script = pkgs.writeShellScriptBin "run-database" ''
-            nix develop --refresh github:K1-mikaze/Nix-Environments/main?dir=flakes/database/postgresql
+            if [[ $(basename "$PWD") == "back-end" ]]; then
+              nix develop --refresh github:K1-mikaze/Nix-Environments/main?dir=flakes/database/postgresql
+            else
+              echo "> You're not in the required folder 'back-end/' "
+              exit
+            fi
           '';
         in "${script}/bin/run-database";
       };
 
-      db-stop = {
+      stop-db = {
         type = "app";
         program = let
           script = pkgs.writeShellScriptBin "stop-database" ''
-            nix run github:K1-mikaze/Nix-Environments/main?dir=flakes/database/postgresql#stop
+            if [[ $(basename "$PWD") == "back-end" ]]; then
+              nix run github:K1-mikaze/Nix-Environments/main?dir=flakes/database/postgresql#stop
+            else
+              echo "> You're not in the required folder 'back-end/' "
+              exit
+            fi
           '';
         in "${script}/bin/stop-database";
       };
 
-      db-reset = {
+      reset-db = {
         type = "app";
         program = let
           script = pkgs.writeShellScriptBin "reset-database" ''
-            nix run github:K1-mikaze/Nix-Environments/main?dir=flakes/database/postgresql#reset
+            if [[ $(basename "$PWD") == "back-end" ]]; then
+              nix run github:K1-mikaze/Nix-Environments/main?dir=flakes/database/postgresql#reset
+            else
+              echo "> You're not in the required folder 'back-end/' "
+              exit
+            fi
           '';
         in "${script}/bin/reset-database";
       };
