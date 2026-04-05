@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HomePage, Portfolio } from "./pages/pagesBundle.jsx";
-import { WhatIsNix } from "./pages/blogs/blogsBundle.jsx";
+import { WhatIsNix, WhatAreJWT } from "./pages/blogs/blogsBundle.jsx";
 import { useStorageState } from "./states/states.jsx";
 import {
   API_URL,
@@ -79,6 +79,20 @@ function App() {
           path="/blogs/what-is-nix"
           element={
             <WhatIsNix
+              theme={theme}
+              handleTheme={handleTheme}
+              language={language}
+              handleLanguage={handleLanguage}
+              projects_url={API.projects}
+              blogs_url={API.blogs}
+            />
+          }
+        />
+
+        <Route
+          path="/blogs/what-are-jwt"
+          element={
+            <WhatAreJWT
               theme={theme}
               handleTheme={handleTheme}
               language={language}
