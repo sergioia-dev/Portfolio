@@ -1,3 +1,4 @@
+import WhatAreJWT from "./WhatAreJWT";
 import WhatIsNix from "./WhatIsNix";
 
-export { WhatIsNix };
+export { WhatIsNix, WhatAreJWT };
