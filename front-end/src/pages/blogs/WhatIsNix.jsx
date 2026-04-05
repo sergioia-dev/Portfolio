@@ -2,497 +2,552 @@ import StaticAside from "../../components/StaticAside";
 import "../../style/blog.css";
 
 function WhatIsNix({ language, handleLanguage, theme, handleTheme }) {
-const Section_ES = () => {
-  return (
-    <div className="section-area blog">
-      <header>
-        <h1>¿Qué es Nix?</h1>
-        <span>31 de enero de 2026</span>
-        <span>15 min de lectura</span>
-      </header>
+  const Section_ES = () => {
+    return (
+      <div className="section-area blog">
+        <header>
+          <h1>¿Qué es Nix?</h1>
+          <span>31 de enero de 2026</span>
+          <span>15 min de lectura</span>
+        </header>
 
-      <section>
-        <p>
-          Si has estado en un viaje con Linux por un tiempo, probablemente hayas escuchado
-          el nombre <strong>Nix</strong>. Es posible que lo hayas buscado, solo
-          para encontrarte con conceptos que parecían confusos o densos. Si eso
-          te suena familiar, no estás solo. Entonces, vamos a desglosarlo:
-        </p>
+        <section>
+          <p>
+            Si has estado en un viaje con Linux por un tiempo, probablemente
+            hayas escuchado el nombre <strong>Nix</strong>. Es posible que lo
+            hayas buscado, solo para encontrarte con conceptos que parecían
+            confusos o densos. Si eso te suena familiar, no estás solo.
+            Entonces, vamos a desglosarlo:
+          </p>
 
-        <h4>
-          En su esencia, Nix es un ecosistema poderoso y único construido alrededor de
-          un principio central: despliegue de software confiable y reproducible.
-          Este ecosistema consiste principalmente en tres componentes
-          interconectados:
-        </h4>
-        <ul>
-          <li>
-            <strong>Paquetes Nix:</strong> Este es el repositorio de software más grande del mundo y
-            más actualizado, que cuenta con más de{" "}
-            <strong>120,000 paquetes activos</strong>. Pero no se trata solo de
-            cantidad. La magia está en cómo se construyen y gestionan estos paquetes,
-            asegurando resultados consistentes en diferentes sistemas.
-          </li>
-          <li>
-            <strong>El lenguaje Nix:</strong> Este es el pegamento que mantiene
-            todo junto. Es un lenguaje de programación{" "}
-            puramente funcional, evaluado perezosamente{" "}
-            diseñado específicamente para{" "}
-            configuración declarativa y definiciones de paquetes. En lugar de
-            escribir instrucciones paso a paso (imperativas), declaras cómo
-            quieres que se vea tu sistema o paquete, similar en espíritu a
-            lenguajes como Haskell.
-          </li>
-          <li>
-            <strong>NixOS:</strong> Aquí es donde el ecosistema se convierte en un
-            sistema operativo completo. NixOS utiliza el lenguaje Nix y
-            Nixpkgs para definir tu configuración de sistema completo{" "}
-            en un único conjunto de archivos declarativos.
-          </li>
-        </ul>
+          <h4>
+            En su esencia, Nix es un ecosistema poderoso y único construido
+            alrededor de un principio central: despliegue de software confiable
+            y reproducible. Este ecosistema consiste principalmente en tres
+            componentes interconectados:
+          </h4>
+          <ul>
+            <li>
+              <strong>Paquetes Nix:</strong> Este es el repositorio de software
+              más grande del mundo y más actualizado, que cuenta con más de{" "}
+              <strong>120,000 paquetes activos</strong>. Pero no se trata solo
+              de cantidad. La magia está en cómo se construyen y gestionan estos
+              paquetes, asegurando resultados consistentes en diferentes
+              sistemas.
+            </li>
+            <li>
+              <strong>El lenguaje Nix:</strong> Este es el pegamento que
+              mantiene todo junto. Es un lenguaje de programación puramente
+              funcional, evaluado perezosamente diseñado específicamente para{" "}
+              configuración declarativa y definiciones de paquetes. En lugar de
+              escribir instrucciones paso a paso (imperativas), declaras cómo
+              quieres que se vea tu sistema o paquete, similar en espíritu a
+              lenguajes como Haskell.
+            </li>
+            <li>
+              <strong>NixOS:</strong> Aquí es donde el ecosistema se convierte
+              en un sistema operativo completo. NixOS utiliza el lenguaje Nix y
+              Nixpkgs para definir tu configuración de sistema completo en un
+              único conjunto de archivos declarativos.
+            </li>
+          </ul>
 
-        <p>
-          Entonces, ¿cuál es el gran problema? La combinación de estas herramientas resuelve
-          problemas críticos en la gestión de software: conflictos de dependencias, el
-          síndrome de "funciona en mi máquina" y la dificultad de revertir
-          cambios. Con Nix, puedes crear entornos aislados y reproducibles
-          para desarrollo, asegurar que la configuración de tu sistema esté
-          controlada por versiones y sea consistente, y compartir tu configuración con otros,
-          sabiendo que funcionará exactamente de la misma manera.
-        </p>
-        <p>
-          Pero, ¿cómo empezó todo? Bueno, comenzó como una tesis de Eelco
-          Dolstra, donde buscaba un sistema que fuera realmente confiable,
-          pudiendo controlar un despliegue completo.
-        </p>
-      </section>
+          <p>
+            Entonces, ¿cuál es el gran problema? La combinación de estas
+            herramientas resuelve problemas críticos en la gestión de software:
+            conflictos de dependencias, el síndrome de "funciona en mi máquina"
+            y la dificultad de revertir cambios. Con Nix, puedes crear entornos
+            aislados y reproducibles para desarrollo, asegurar que la
+            configuración de tu sistema esté controlada por versiones y sea
+            consistente, y compartir tu configuración con otros, sabiendo que
+            funcionará exactamente de la misma manera.
+          </p>
+          <p>
+            Pero, ¿cómo empezó todo? Bueno, comenzó como una tesis de Eelco
+            Dolstra, donde buscaba un sistema que fuera realmente confiable,
+            pudiendo controlar un despliegue completo.
+          </p>
+        </section>
 
-      <section>
-        <h3>Entendiendo los Modelos de Despliegue de Software</h3>
-        <p>
-          El despliegue de software fundamentalmente implica transferir un conjunto de
-          archivos que constituyen un programa a un sistema de usuario final. Si bien esto
-          puede parecer sencillo, el proceso está plagado de desafíos
-          que pueden categorizarse en dos áreas principales: problemas ambientales{" "}
-          y problemas de manejabilidad.
-        </p>
+        <section>
+          <h3>Entendiendo los Modelos de Despliegue de Software</h3>
+          <p>
+            El despliegue de software fundamentalmente implica transferir un
+            conjunto de archivos que constituyen un programa a un sistema de
+            usuario final. Si bien esto puede parecer sencillo, el proceso está
+            plagado de desafíos que pueden categorizarse en dos áreas
+            principales: problemas ambientales y problemas de manejabilidad.
+          </p>
 
-        <h4>Problemas Ambientales</h4>
-        <ul>
-          <li>
-            Los desafíos ambientales se refieren principalmente a las dependencias del software.
-            Un programa puede depender de componentes de software específicos o requerir
-            modificaciones particulares del sistema para funcionar correctamente.
-            Si estas condiciones no se cumplen, o si difieren del entorno del desarrollador,
-            el software puede fallar.
-          </li>
-          <li>
-            Los sistemas operativos son inherentemente complejos y no deterministas. Es
-            a menudo imposible garantizar la presencia de dependencias requeridas,
-            ya que los componentes de software rara vez son autónomos y
-            frecuentemente dependen de otros componentes. Este problema se ve exacerbado
-            al empaquetar software, ya que las dependencias pueden volverse evidentes
-            solo al desplegarse en una máquina diferente.
-          </li>
-          <li>
-            Las dependencias no se limitan a componentes de tiempo de ejecución. Al desplegar
-            desde el código fuente, las dependencias de tiempo de compilación como compiladores y
-            bibliotecas son necesarias, sin embargo, estas rara vez se incluyen por defecto
-            en la mayoría de los sistemas operativos.
-          </li>
-          <li>
-            La compatibilidad de versiones complica aún más el despliegue. Las dependencias de software
-            evolucionan, y las versiones más nuevas pueden introducir cambios disruptivos.
-            Asegurar que las versiones correctas estén disponibles es crítico para la funcionalidad.
-          </li>
-          <li>
-            Incluso si todas las dependencias requeridas están presentes, un componente debe
-            poder localizarlas. Esto típicamente implica buscar rutas predefinidas,
-            como CLASSPATH o directorios binarios, como es común en entornos Linux.
-          </li>
-        </ul>
+          <h4>Problemas Ambientales</h4>
+          <ul>
+            <li>
+              Los desafíos ambientales se refieren principalmente a las
+              dependencias del software. Un programa puede depender de
+              componentes de software específicos o requerir modificaciones
+              particulares del sistema para funcionar correctamente. Si estas
+              condiciones no se cumplen, o si difieren del entorno del
+              desarrollador, el software puede fallar.
+            </li>
+            <li>
+              Los sistemas operativos son inherentemente complejos y no
+              deterministas. Es a menudo imposible garantizar la presencia de
+              dependencias requeridas, ya que los componentes de software rara
+              vez son autónomos y frecuentemente dependen de otros componentes.
+              Este problema se ve exacerbado al empaquetar software, ya que las
+              dependencias pueden volverse evidentes solo al desplegarse en una
+              máquina diferente.
+            </li>
+            <li>
+              Las dependencias no se limitan a componentes de tiempo de
+              ejecución. Al desplegar desde el código fuente, las dependencias
+              de tiempo de compilación como compiladores y bibliotecas son
+              necesarias, sin embargo, estas rara vez se incluyen por defecto en
+              la mayoría de los sistemas operativos.
+            </li>
+            <li>
+              La compatibilidad de versiones complica aún más el despliegue. Las
+              dependencias de software evolucionan, y las versiones más nuevas
+              pueden introducir cambios disruptivos. Asegurar que las versiones
+              correctas estén disponibles es crítico para la funcionalidad.
+            </li>
+            <li>
+              Incluso si todas las dependencias requeridas están presentes, un
+              componente debe poder localizarlas. Esto típicamente implica
+              buscar rutas predefinidas, como CLASSPATH o directorios binarios,
+              como es común en entornos Linux.
+            </li>
+          </ul>
 
-        <p>
-          Adicionalmente, algunos componentes pueden depender de artefactos no software,
-          como archivos de configuración o cuentas de usuario, añadiendo otra capa
-          de complejidad ambiental.
-        </p>
+          <p>
+            Adicionalmente, algunos componentes pueden depender de artefactos no
+            software, como archivos de configuración o cuentas de usuario,
+            añadiendo otra capa de complejidad ambiental.
+          </p>
 
-        <h4>Problemas de Manejabilidad</h4>
-        <p>La gestión de software introduce sus propios desafíos:</p>
-        <ul>
-          <li>
-            <strong>Desinstalación:</strong> Eliminar un componente de forma segura
-            requiere borrar archivos de configuración, eliminar entradas de rutas como CLASSPATH,
-            y asegurar que ningún otro software dependa de las mismas dependencias.
-            Fallar en hacerlo puede romper otras aplicaciones.
-          </li>
-          <li>
-            <strong>Actualizaciones:</strong>
-            La mayoría de los gestores de paquetes no soportan la instalación concurrente de
-            múltiples versiones del mismo software. Las actualizaciones típicamente
-            sobrescriben las versiones existentes sin verificar la compatibilidad con
-            software dependiente, llevando a una potencial inestabilidad del sistema.
-          </li>
-        </ul>
-        <p>
-          Estos problemas contribuyen al escenario del "Infierno DLL", donde actualizar
-          o desinstalar una aplicación interrumpe otras que comparten
-          dependencias. Las especificaciones de dependencia en los gestores de paquetes
-          tradicionales son inherentemente poco confiables, ya que dependen de
-          identificadores nominales (nombres y rangos de versión) en lugar de referencias
-          precisas e inmutables a artefactos. Esto permite que componentes funcionalmente incompatibles
-          con identificadores de versión idénticos satisfagan las dependencias,
-          socavando la integridad del sistema.
-        </p>
-      </section>
-      <section>
-        <h3>Gestión de Paquetes Tradicional</h3>
-        <p>
-          RPM (Red Hat Package Manager) es una herramienta de despliegue de bajo nivel ampliamente utilizada
-          en distribuciones Linux. Instala y gestiona componentes
-          mientras mantiene metadatos para prevenir actualizaciones o
-          desinstalaciones inseguras. Por ejemplo, un paquete RPM se construye desde el código fuente usando:
-        </p>
-        <pre>
-          <code>rpm build -ba hello.tar.gz</code>
-        </pre>
-        <p>
-          El paquete resultante (por ejemplo: hello-1.0.i686.rpm) es
-          transferido a máquinas cliente e instalado vía:
-        </p>
+          <h4>Problemas de Manejabilidad</h4>
+          <p>La gestión de software introduce sus propios desafíos:</p>
+          <ul>
+            <li>
+              <strong>Desinstalación:</strong> Eliminar un componente de forma
+              segura requiere borrar archivos de configuración, eliminar
+              entradas de rutas como CLASSPATH, y asegurar que ningún otro
+              software dependa de las mismas dependencias. Fallar en hacerlo
+              puede romper otras aplicaciones.
+            </li>
+            <li>
+              <strong>Actualizaciones:</strong>
+              La mayoría de los gestores de paquetes no soportan la instalación
+              concurrente de múltiples versiones del mismo software. Las
+              actualizaciones típicamente sobrescriben las versiones existentes
+              sin verificar la compatibilidad con software dependiente, llevando
+              a una potencial inestabilidad del sistema.
+            </li>
+          </ul>
+          <p>
+            Estos problemas contribuyen al escenario del "Infierno DLL", donde
+            actualizar o desinstalar una aplicación interrumpe otras que
+            comparten dependencias. Las especificaciones de dependencia en los
+            gestores de paquetes tradicionales son inherentemente poco
+            confiables, ya que dependen de identificadores nominales (nombres y
+            rangos de versión) en lugar de referencias precisas e inmutables a
+            artefactos. Esto permite que componentes funcionalmente
+            incompatibles con identificadores de versión idénticos satisfagan
+            las dependencias, socavando la integridad del sistema.
+          </p>
+        </section>
+        <section>
+          <h3>Gestión de Paquetes Tradicional</h3>
+          <p>
+            RPM (Red Hat Package Manager) es una herramienta de despliegue de
+            bajo nivel ampliamente utilizada en distribuciones Linux. Instala y
+            gestiona componentes mientras mantiene metadatos para prevenir
+            actualizaciones o desinstalaciones inseguras. Por ejemplo, un
+            paquete RPM se construye desde el código fuente usando:
+          </p>
+          <pre>
+            <code>rpm build -ba hello.tar.gz</code>
+          </pre>
+          <p>
+            El paquete resultante (por ejemplo: hello-1.0.i686.rpm) es
+            transferido a máquinas cliente e instalado vía:
+          </p>
 
-        <pre>
-          <code>rpm -i hello-1.0.i686.rpm</code>
-        </pre>
-        <p>
-          RPM rastrea la propiedad de archivos, verifica la integridad de los archivos a través de
-          hashes criptográficos y aplica restricciones de dependencia. Por
-          ejemplo, si un paquete xhello depende de hello,
-          desinstalar hello es bloqueado mientras xhello permanezca instalado.
-        </p>
-        <p>Sin embargo, RPM sufre de limitaciones fundamentales:</p>
-        <ul>
-          <li>
-            <strong>Incapacidad para Validar Dependencias:</strong> Las especificaciones de dependencia
-            (por ejemplo: Requires: hello) son nominales y
-            basadas en nombres de componentes en lugar de propiedades funcionales. Esto
-            hace imposible garantizar la corrección, ya que cualquier componente
-            llamado hello, independientemente de su comportamiento real o versión, puede
-            satisfacer el requisito.
-          </li>
-          <li>
-            <strong>Inexactitud de Versionado:</strong> Si bien RPM soporta
-            restricciones de versión (por ejemplo: Requires: hello &ge; 1.0), estas
-            permanecen nominales y asumen compatibilidad hacia atrás, lo cual no puede ser
-            garantizado. Incluso las dependencias "exactas" (por ejemplo: Requires:
-            hello = 1.0) son poco confiables, ya que versiones parcheadas o compiladas de manera diferente
-            pueden tener el mismo nombre y número de versión.
-          </li>
-          <li>
-            <strong>Interferencia de Componentes:</strong>
-            La falta de una gestión precisa de dependencias lleva a interferencia
-            entre componentes, donde operaciones en un componente (por
-            ejemplo: una actualización) pueden romper software no relacionado.
-          </li>
-        </ul>
-        <p>
-          Estos problemas no son exclusivos de RPM sino que son endémicos de los gestores de paquetes
-          tradicionales, que priorizan la uniformidad en todo el sistema sobre
-          el aislamiento y la reproducibilidad.
-        </p>
-      </section>
+          <pre>
+            <code>rpm -i hello-1.0.i686.rpm</code>
+          </pre>
+          <p>
+            RPM rastrea la propiedad de archivos, verifica la integridad de los
+            archivos a través de hashes criptográficos y aplica restricciones de
+            dependencia. Por ejemplo, si un paquete xhello depende de hello,
+            desinstalar hello es bloqueado mientras xhello permanezca instalado.
+          </p>
+          <p>Sin embargo, RPM sufre de limitaciones fundamentales:</p>
+          <ul>
+            <li>
+              <strong>Incapacidad para Validar Dependencias:</strong> Las
+              especificaciones de dependencia (por ejemplo: Requires: hello) son
+              nominales y basadas en nombres de componentes en lugar de
+              propiedades funcionales. Esto hace imposible garantizar la
+              corrección, ya que cualquier componente llamado hello,
+              independientemente de su comportamiento real o versión, puede
+              satisfacer el requisito.
+            </li>
+            <li>
+              <strong>Inexactitud de Versionado:</strong> Si bien RPM soporta
+              restricciones de versión (por ejemplo: Requires: hello &ge; 1.0),
+              estas permanecen nominales y asumen compatibilidad hacia atrás, lo
+              cual no puede ser garantizado. Incluso las dependencias "exactas"
+              (por ejemplo: Requires: hello = 1.0) son poco confiables, ya que
+              versiones parcheadas o compiladas de manera diferente pueden tener
+              el mismo nombre y número de versión.
+            </li>
+            <li>
+              <strong>Interferencia de Componentes:</strong>
+              La falta de una gestión precisa de dependencias lleva a
+              interferencia entre componentes, donde operaciones en un
+              componente (por ejemplo: una actualización) pueden romper software
+              no relacionado.
+            </li>
+          </ul>
+          <p>
+            Estos problemas no son exclusivos de RPM sino que son endémicos de
+            los gestores de paquetes tradicionales, que priorizan la uniformidad
+            en todo el sistema sobre el aislamiento y la reproducibilidad.
+          </p>
+        </section>
 
-      <section>
-        <h3>Modelos de Despliegue en Windows y MacOS</h3>
-        <h4>El Modelo monolítico y empaquetado</h4>
-        <p>
-          Este enfoque prioriza la simplicidad para el usuario final y la estabilidad de la aplicación
-          internalizando dependencias. Cada aplicación es una unidad
-          autónoma.
-        </p>
-        <p>
-          Esto se logra mediante enlace estático o empaquetando bibliotecas dinámicas
-          dentro del directorio privado de la aplicación, lo que nos da algunas
-          ventajas:
-        </p>
-        <ul>
-          <li>
-            <strong>Aislamiento y Estabilidad:</strong> Una aplicación no puede ser
-            rota por cambios en otra. No hay dependencia compartida o "namespace" que corromper.
-          </li>
-          <li>
-            <strong>Simplicidad para Usuarios:</strong> La instalación es a menudo tan
-            simple como arrastrar un paquete; la desinstalación implica borrarlo.
-            No se requiere resolución compleja de dependencias por parte del usuario.
-          </li>
-          <li>
-            <strong>Confiabilidad para Desarrolladores:</strong> Los desarrolladores envían un
-            conjunto conocido y probado de binarios.
-          </li>
-        </ul>
-        <p>Sin embargo, este enfoque puede traer algunas desventajas:</p>
-        <ul>
-          <li>
-            <strong>Ineficiencia (Sin Compartir):</strong> Si N aplicaciones usan
-            la misma dependencia M, se duplica N veces. Esto lleva a un
-            uso de disco/memoria/caché de Θ(NM) en lugar del óptimo Θ(N+M).
-          </li>
-          <li>
-            <strong>Seguridad y Mantenimiento:</strong> Una vulnerabilidad en una
-            biblioteca común (ej., libpng) debe parchearse en cada paquete de aplicación
-            que la contenga, un proceso que depende de que cada
-            proveedor emita una actualización.
-          </li>
-          <li>
-            <strong>Carga de Composición:</strong> El desarrollador, no el
-            sistema, debe ensamblar manualmente todas las dependencias correctas en el
-            paquete.
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>
-          El Modelo de Biblioteca Compartida Global (Linux Tradicional y Windows Clásico)
-        </h3>
-        <p>
-          Este modelo prioriza la eficiencia del sistema creando un namespace
-          global y mutable para componentes compartidos. Esto funciona instalando en
-          ubicaciones centrales como /usr/lib en Linux y C:\Windows\System32 en
-          Windows, y estas aplicaciones se enlazan dinámicamente a estos
-          archivos compartidos. Lo que nos trae algunas ventajas:
-        </p>
-        <ul>
-          <li>
-            <strong>Eficiencia:</strong> Las dependencias compartidas se almacenan y cargan en memoria una vez.
-          </li>
-        </ul>
-        <p>también nos trae grandes desventajas:</p>
-        <ul>
-          <li>
-            El "Infierno DLL": Este es el modo de fallo catastrófico. El
-            namespace global y mutable se convierte en un punto de conflicto. Instalar,
-            actualizar o remover la Aplicación "A" puede reemplazar o borrar una
-            biblioteca compartida (Foo.dll v1.0 -&gt; v2.0), rompiendo instantáneamente
-            la Aplicación "B" que dependía del comportamiento exacto de v1.0. Lo que
-            hace que las restricciones de versión sean nominales y no aplicables.
-          </li>
-          <li>
-            <strong>Fragilidad:</strong> La estabilidad del sistema es una red de
-            dependencias implícitas y sin versionar. La desinstalación correcta es
-            casi imposible sin romper algo más.
-          </li>
-        </ul>
-        <p>
-          Windows y Mac OS X tienden a usar despliegue monolítico para
-          aplicaciones, excepto por algunas dependencias de grano grueso en el
-          entorno del sistema operativo, como el kernel, las bibliotecas GUI principales
-          o DirectX. Las dependencias tienden a distribuirse como parte
-          de la aplicación misma, sin compartir dependencias entre
-          aplicaciones.
-        </p>
-        <p>
-          Esto puede lograrse mediante enlace estático o teniendo bibliotecas
-          dinámicas como parte del namespace privado (árbol de directorios) de
-          la aplicación (ej., C:\Program Files\MyApp\Foo.DLL). Si bien esto
-          reduce la complejidad del despliegue en la máquina del usuario final, tiene
-          varios inconvenientes.
-        </p>
-        <p>
-          Primero, elimina el compartir: si dos aplicaciones usan el "mismo"
-            componente, terminarán usando copias privadas. El
-            resultado es un mayor consumo de recursos en términos de espacio en disco,
-            RAM, eficiencia de caché, tiempo de descarga, etcétera.
-        </p>
-        <p>
-          Claramente, es malo si, por ejemplo, todas las dependencias del programa
-          no se compartieran. En el peor caso, obtenemos una explosión cuadrática en los
-          requisitos de espacio en disco: si tenemos N aplicaciones que comparten las
-          mismas M dependencias, entonces necesitamos espacio en disco Θ(NM) en lugar de Θ(N + M).
-          Segundo, todavía requiere que el desarrollador obtenga y componga
-          los componentes, típicamente a través de un proceso semi-manual.
-          Especialmente elegantes desde la perspectiva del usuario final son los paquetes de aplicación de Mac OS,
-          que son árboles de directorios que contienen todos los archivos pertenecientes a
-          una aplicación. Generalmente, tales paquetes son autónomos, excepto
-          por dependencias de componentes del sistema operativo. Al contrario de las típicas
-          aplicaciones de Windows, no tienen otras dependencias de entorno
-          como configuraciones del registro. Esto significa que los paquetes pueden
-          copiarse o moverse arbitrariamente en el sistema de archivos.
-          Por ejemplo, todo Microsoft Office en Mac OS puede copiarse
-          entre máquinas arrastrándolo de un disco a otro. Nuevamente, la
-          limitación de este enfoque es que se desmorona cuando los componentes
-          tienen dependencias entre sí. Es decir, el enfoque de paquetes funciona
-          solo para componentes de "nivel superior", es decir, aplicaciones de usuario final.
-          Históricamente, Windows ha sufrido del infierno DLL, resultado de un
-          namespace global no gestionado utilizado para almacenar dependencias compartidas,
-          ej., el directorio C:\Windows\System. Una instalación o
-          desinstalación de una aplicación frecuentemente causaba que otras
-          aplicaciones se rompieran porque una biblioteca compartida (DLL) sería reemplazada
-          con una versión incompatible, o borrada por completo.
-        </p>
-      </section>
-      <section>
-        <h2>¿Cómo resuelve Nix este problema?</h2>
-        <p>
-          Nix aborda los problemas fundamentales del despliegue de software
-          tradicional a través de una arquitectura radicalmente diferente basada
-          en la gestión de paquetes puramente funcional. Así es como aborda
-          cada problema:
-        </p>
-        <h3>Resolviendo el Infierno de Dependencias con Entornos Aislados</h3>
-        <p>
-          En sistemas tradicionales, los componentes comparten un namespace global
-          (como /usr/bin o C:\Windows\System32), causando conflictos de versión
-          y problemas de "funciona en mi máquina".
-        </p>
-        <p>
-          Nix resuelve este problema instalando cada paquete en un{" "}
-          directorio inmutable y único en el almacén Nix
-          (ej., /nix/store/5m66p9z...-glibc-2.35). El nombre del directorio
-          contiene un hash criptográfico derivado de:
-        </p>
-        <ul>
-          <li>Todas las dependencias de construcción (versiones exactas, banderas de compilación, etc.)</li>
-          <li>Hash del código fuente</li>
-          <li>Scripts de construcción y configuración</li>
-        </ul>
-        <p>
-          Esto significa que múltiples versiones de la misma biblioteca pueden coexistir
-          pacíficamente porque un script de construcción o configuración diferente
-          puede cambiar el hash. Las dependencias son exactas porque un paquete depende de
-          rutas de almacén específicas o de un hash criptográfico, no solo de números de versión.
-          También no más "infierno DLL", ya que cada paquete obtiene su propio entorno aislado
-          con precisamente las dependencias necesarias. Esto significa también que
-          estos paquetes pueden compartirse entre componentes sin comprometerlos
-          en una actualización o eliminación del paquete que los estaba usando.
-        </p>
-        <h3>Resolviendo Dependencias Inexactas con Pureza Funcional</h3>
-        <p>
-          El problema aquí es que las dependencias son nominales como "Necesito glibc &gt;= 2.30"
-          en lugar de exactas, llevándonos a problemas de compatibilidad.
-        </p>
-        <p>
-          Nix resuelve este problema especificando dependencias como rutas de almacén o
-          hashes criptográficos. Apunta a hashes exactos como
-          "/nix/store/addscvwjybbjjb... glibc-2.35", lo que asegura que:
-        </p>
-        <ul>
-          <li>
-            El mismo binario exacto (construido con el mismo compilador, banderas, parches)
-            se usa en todas partes.
-          </li>
-          <li>
-            <strong>Sin ambigüedad:</strong> diferentes construcciones de "glibc-2.35"
-            obtienen diferentes rutas de almacén.
-          </li>
-          <li>
-            <strong>Reproducibilidad completa:</strong> las mismas entradas siempre
-            producen la misma ruta de almacén.
-          </li>
-        </ul>
-        <h3>Resolviendo Inconsistencia en el Despliegue con Construcciones Reproducibles</h3>
-        <p>
-          Nuestro problema aquí es que el software se comporta de manera diferente en distintas
-          máquinas debido a dependencias ocultas o diferencias ambientales.
-        </p>
-        <p>
-          La solución aquí es que las construcciones ocurren en entornos aislados{" "}
-          que contienen solo dependencias declaradas explícitamente. El proceso de construcción:
-        </p>
-        <ol>
-          <li>Comienza con un entorno mínimo (solo entradas especificadas)</li>
-          <li>No usa bibliotecas del sistema a menos que se declaren explícitamente</li>
-          <li>Establece rutas precisas a todas las dependencias</li>
-          <li>Registra todas las entradas para futura reproducibilidad</li>
-        </ol>
-        <p>
-          Esto elimina los problemas de "funciona en mi máquina" porque el entorno
-          de construcción está perfectamente controlado y es reproducible.
-        </p>
-        <h3>Resolviendo Actualizaciones Seguras y Reversiones con Inmutabilidad</h3>
-        <p>
-          El problema es que actualizar o eliminar un paquete puede romper
-          aplicaciones dependientes.
-        </p>
-        <p>
-          Nix resuelve este problema usando el Almacén Nix, que es inmutable y
-          de solo adición.
-        </p>
-        <ul>
-          <li>Instalar una nueva versión no sobrescribe la anterior</li>
-          <li>Las versiones antiguas permanecen disponibles mientras sean necesarias</li>
-          <li>Las configuraciones del sistema referencian rutas de almacén específicas</li>
-          <li>
-            Las reversiones son instantáneas y garantizadas para funcionar (simplemente cambiar a
-            la configuración anterior)
-          </li>
-        </ul>
-        <p>
-          Por ejemplo, después de actualizar glibc, las aplicaciones antiguas continúan usando
-          el glibc antiguo, las nuevas aplicaciones usan el nuevo glibc y
-          ambos pueden coexistir sin conflicto.
-        </p>
-        <h3>Resolviendo el Descubrimiento de Dependencias con el Lenguaje Nix</h3>
-        <p>
-          Nuestro problema es que los componentes deben encontrar sus dependencias a través de
-          rutas globales o variables de entorno.
-        </p>
-        <p>
-          <strong>La solución que trae Nix:</strong> El lenguaje Nix{" "}
-          calcula automáticamente grafos de dependencias y configura
-          entornos:
-        </p>
-        <ul>
-          <li>Los paquetes declaran sus dependencias exactas.</li>
-          <li>
-            Nix construye grafos de dependencias y asegura que todas las dependencias estén
-            disponibles.
-          </li>
-          <li>
-            Los entornos de tiempo de ejecución se construyen con rutas precisas a todas
-            las dependencias necesarias.
-          </li>
-          <li>Sin contaminación de PATH global o LD_LIBRARY_PATH.</li>
-        </ul>
-      </section>
+        <section>
+          <h3>Modelos de Despliegue en Windows y MacOS</h3>
+          <h4>El Modelo monolítico y empaquetado</h4>
+          <p>
+            Este enfoque prioriza la simplicidad para el usuario final y la
+            estabilidad de la aplicación internalizando dependencias. Cada
+            aplicación es una unidad autónoma.
+          </p>
+          <p>
+            Esto se logra mediante enlace estático o empaquetando bibliotecas
+            dinámicas dentro del directorio privado de la aplicación, lo que nos
+            da algunas ventajas:
+          </p>
+          <ul>
+            <li>
+              <strong>Aislamiento y Estabilidad:</strong> Una aplicación no
+              puede ser rota por cambios en otra. No hay dependencia compartida
+              o "namespace" que corromper.
+            </li>
+            <li>
+              <strong>Simplicidad para Usuarios:</strong> La instalación es a
+              menudo tan simple como arrastrar un paquete; la desinstalación
+              implica borrarlo. No se requiere resolución compleja de
+              dependencias por parte del usuario.
+            </li>
+            <li>
+              <strong>Confiabilidad para Desarrolladores:</strong> Los
+              desarrolladores envían un conjunto conocido y probado de binarios.
+            </li>
+          </ul>
+          <p>Sin embargo, este enfoque puede traer algunas desventajas:</p>
+          <ul>
+            <li>
+              <strong>Ineficiencia (Sin Compartir):</strong> Si N aplicaciones
+              usan la misma dependencia M, se duplica N veces. Esto lleva a un
+              uso de disco/memoria/caché de Θ(NM) en lugar del óptimo Θ(N+M).
+            </li>
+            <li>
+              <strong>Seguridad y Mantenimiento:</strong> Una vulnerabilidad en
+              una biblioteca común (ej., libpng) debe parchearse en cada paquete
+              de aplicación que la contenga, un proceso que depende de que cada
+              proveedor emita una actualización.
+            </li>
+            <li>
+              <strong>Carga de Composición:</strong> El desarrollador, no el
+              sistema, debe ensamblar manualmente todas las dependencias
+              correctas en el paquete.
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>
+            El Modelo de Biblioteca Compartida Global (Linux Tradicional y
+            Windows Clásico)
+          </h3>
+          <p>
+            Este modelo prioriza la eficiencia del sistema creando un namespace
+            global y mutable para componentes compartidos. Esto funciona
+            instalando en ubicaciones centrales como /usr/lib en Linux y
+            C:\Windows\System32 en Windows, y estas aplicaciones se enlazan
+            dinámicamente a estos archivos compartidos. Lo que nos trae algunas
+            ventajas:
+          </p>
+          <ul>
+            <li>
+              <strong>Eficiencia:</strong> Las dependencias compartidas se
+              almacenan y cargan en memoria una vez.
+            </li>
+          </ul>
+          <p>también nos trae grandes desventajas:</p>
+          <ul>
+            <li>
+              El "Infierno DLL": Este es el modo de fallo catastrófico. El
+              namespace global y mutable se convierte en un punto de conflicto.
+              Instalar, actualizar o remover la Aplicación "A" puede reemplazar
+              o borrar una biblioteca compartida (Foo.dll v1.0 -&gt; v2.0),
+              rompiendo instantáneamente la Aplicación "B" que dependía del
+              comportamiento exacto de v1.0. Lo que hace que las restricciones
+              de versión sean nominales y no aplicables.
+            </li>
+            <li>
+              <strong>Fragilidad:</strong> La estabilidad del sistema es una red
+              de dependencias implícitas y sin versionar. La desinstalación
+              correcta es casi imposible sin romper algo más.
+            </li>
+          </ul>
+          <p>
+            Windows y Mac OS X tienden a usar despliegue monolítico para
+            aplicaciones, excepto por algunas dependencias de grano grueso en el
+            entorno del sistema operativo, como el kernel, las bibliotecas GUI
+            principales o DirectX. Las dependencias tienden a distribuirse como
+            parte de la aplicación misma, sin compartir dependencias entre
+            aplicaciones.
+          </p>
+          <p>
+            Esto puede lograrse mediante enlace estático o teniendo bibliotecas
+            dinámicas como parte del namespace privado (árbol de directorios) de
+            la aplicación (ej., C:\Program Files\MyApp\Foo.DLL). Si bien esto
+            reduce la complejidad del despliegue en la máquina del usuario
+            final, tiene varios inconvenientes.
+          </p>
+          <p>
+            Primero, elimina el compartir: si dos aplicaciones usan el "mismo"
+            componente, terminarán usando copias privadas. El resultado es un
+            mayor consumo de recursos en términos de espacio en disco, RAM,
+            eficiencia de caché, tiempo de descarga, etcétera.
+          </p>
+          <p>
+            Claramente, es malo si, por ejemplo, todas las dependencias del
+            programa no se compartieran. En el peor caso, obtenemos una
+            explosión cuadrática en los requisitos de espacio en disco: si
+            tenemos N aplicaciones que comparten las mismas M dependencias,
+            entonces necesitamos espacio en disco Θ(NM) en lugar de Θ(N + M).
+            Segundo, todavía requiere que el desarrollador obtenga y componga
+            los componentes, típicamente a través de un proceso semi-manual.
+            Especialmente elegantes desde la perspectiva del usuario final son
+            los paquetes de aplicación de Mac OS, que son árboles de directorios
+            que contienen todos los archivos pertenecientes a una aplicación.
+            Generalmente, tales paquetes son autónomos, excepto por dependencias
+            de componentes del sistema operativo. Al contrario de las típicas
+            aplicaciones de Windows, no tienen otras dependencias de entorno
+            como configuraciones del registro. Esto significa que los paquetes
+            pueden copiarse o moverse arbitrariamente en el sistema de archivos.
+            Por ejemplo, todo Microsoft Office en Mac OS puede copiarse entre
+            máquinas arrastrándolo de un disco a otro. Nuevamente, la limitación
+            de este enfoque es que se desmorona cuando los componentes tienen
+            dependencias entre sí. Es decir, el enfoque de paquetes funciona
+            solo para componentes de "nivel superior", es decir, aplicaciones de
+            usuario final. Históricamente, Windows ha sufrido del infierno DLL,
+            resultado de un namespace global no gestionado utilizado para
+            almacenar dependencias compartidas, ej., el directorio
+            C:\Windows\System. Una instalación o desinstalación de una
+            aplicación frecuentemente causaba que otras aplicaciones se
+            rompieran porque una biblioteca compartida (DLL) sería reemplazada
+            con una versión incompatible, o borrada por completo.
+          </p>
+        </section>
+        <section>
+          <h2>¿Cómo resuelve Nix este problema?</h2>
+          <p>
+            Nix aborda los problemas fundamentales del despliegue de software
+            tradicional a través de una arquitectura radicalmente diferente
+            basada en la gestión de paquetes puramente funcional. Así es como
+            aborda cada problema:
+          </p>
+          <h3>Resolviendo el Infierno de Dependencias con Entornos Aislados</h3>
+          <p>
+            En sistemas tradicionales, los componentes comparten un namespace
+            global (como /usr/bin o C:\Windows\System32), causando conflictos de
+            versión y problemas de "funciona en mi máquina".
+          </p>
+          <p>
+            Nix resuelve este problema instalando cada paquete en un directorio
+            inmutable y único en el almacén Nix (ej.,
+            /nix/store/5m66p9z...-glibc-2.35). El nombre del directorio contiene
+            un hash criptográfico derivado de:
+          </p>
+          <ul>
+            <li>
+              Todas las dependencias de construcción (versiones exactas,
+              banderas de compilación, etc.)
+            </li>
+            <li>Hash del código fuente</li>
+            <li>Scripts de construcción y configuración</li>
+          </ul>
+          <p>
+            Esto significa que múltiples versiones de la misma biblioteca pueden
+            coexistir pacíficamente porque un script de construcción o
+            configuración diferente puede cambiar el hash. Las dependencias son
+            exactas porque un paquete depende de rutas de almacén específicas o
+            de un hash criptográfico, no solo de números de versión. También no
+            más "infierno DLL", ya que cada paquete obtiene su propio entorno
+            aislado con precisamente las dependencias necesarias. Esto significa
+            también que estos paquetes pueden compartirse entre componentes sin
+            comprometerlos en una actualización o eliminación del paquete que
+            los estaba usando.
+          </p>
+          <h3>Resolviendo Dependencias Inexactas con Pureza Funcional</h3>
+          <p>
+            El problema aquí es que las dependencias son nominales como
+            "Necesito glibc &gt;= 2.30" en lugar de exactas, llevándonos a
+            problemas de compatibilidad.
+          </p>
+          <p>
+            Nix resuelve este problema especificando dependencias como rutas de
+            almacén o hashes criptográficos. Apunta a hashes exactos como
+            "/nix/store/addscvwjybbjjb... glibc-2.35", lo que asegura que:
+          </p>
+          <ul>
+            <li>
+              El mismo binario exacto (construido con el mismo compilador,
+              banderas, parches) se usa en todas partes.
+            </li>
+            <li>
+              <strong>Sin ambigüedad:</strong> diferentes construcciones de
+              "glibc-2.35" obtienen diferentes rutas de almacén.
+            </li>
+            <li>
+              <strong>Reproducibilidad completa:</strong> las mismas entradas
+              siempre producen la misma ruta de almacén.
+            </li>
+          </ul>
+          <h3>
+            Resolviendo Inconsistencia en el Despliegue con Construcciones
+            Reproducibles
+          </h3>
+          <p>
+            Nuestro problema aquí es que el software se comporta de manera
+            diferente en distintas máquinas debido a dependencias ocultas o
+            diferencias ambientales.
+          </p>
+          <p>
+            La solución aquí es que las construcciones ocurren en entornos
+            aislados que contienen solo dependencias declaradas explícitamente.
+            El proceso de construcción:
+          </p>
+          <ol>
+            <li>
+              Comienza con un entorno mínimo (solo entradas especificadas)
+            </li>
+            <li>
+              No usa bibliotecas del sistema a menos que se declaren
+              explícitamente
+            </li>
+            <li>Establece rutas precisas a todas las dependencias</li>
+            <li>Registra todas las entradas para futura reproducibilidad</li>
+          </ol>
+          <p>
+            Esto elimina los problemas de "funciona en mi máquina" porque el
+            entorno de construcción está perfectamente controlado y es
+            reproducible.
+          </p>
+          <h3>
+            Resolviendo Actualizaciones Seguras y Reversiones con Inmutabilidad
+          </h3>
+          <p>
+            El problema es que actualizar o eliminar un paquete puede romper
+            aplicaciones dependientes.
+          </p>
+          <p>
+            Nix resuelve este problema usando el Almacén Nix, que es inmutable y
+            de solo adición.
+          </p>
+          <ul>
+            <li>Instalar una nueva versión no sobrescribe la anterior</li>
+            <li>
+              Las versiones antiguas permanecen disponibles mientras sean
+              necesarias
+            </li>
+            <li>
+              Las configuraciones del sistema referencian rutas de almacén
+              específicas
+            </li>
+            <li>
+              Las reversiones son instantáneas y garantizadas para funcionar
+              (simplemente cambiar a la configuración anterior)
+            </li>
+          </ul>
+          <p>
+            Por ejemplo, después de actualizar glibc, las aplicaciones antiguas
+            continúan usando el glibc antiguo, las nuevas aplicaciones usan el
+            nuevo glibc y ambos pueden coexistir sin conflicto.
+          </p>
+          <h3>
+            Resolviendo el Descubrimiento de Dependencias con el Lenguaje Nix
+          </h3>
+          <p>
+            Nuestro problema es que los componentes deben encontrar sus
+            dependencias a través de rutas globales o variables de entorno.
+          </p>
+          <p>
+            <strong>La solución que trae Nix:</strong> El lenguaje Nix calcula
+            automáticamente grafos de dependencias y configura entornos:
+          </p>
+          <ul>
+            <li>Los paquetes declaran sus dependencias exactas.</li>
+            <li>
+              Nix construye grafos de dependencias y asegura que todas las
+              dependencias estén disponibles.
+            </li>
+            <li>
+              Los entornos de tiempo de ejecución se construyen con rutas
+              precisas a todas las dependencias necesarias.
+            </li>
+            <li>Sin contaminación de PATH global o LD_LIBRARY_PATH.</li>
+          </ul>
+        </section>
 
-      <section>
-        <p>
-          Esto es solo una pequeña porción del poder de Nix. En el futuro
-          podríamos hablar también sobre:
-        </p>
-        <ul>
-          <li>
-            NixOS: un sistema operativo que utiliza el gestor de paquetes Nix para
-            instalar software y el lenguaje Nix para configurar el
-            sistema, haciéndolo inquebrantable porque puede hacer reversiones si
-            algo sale mal.
-          </li>
-          <li>
-            Nix-Shells: un entorno creado dentro de una shell sin preocuparse
-            por el sistema operativo.
-          </li>
-          <li>
-            Nix flakes: una nueva forma de empaquetar y hacer Nix-shells, paquetes
-            y configuraciones replicables byte por byte.
-          </li>
-        </ul>
-      </section>
+        <section>
+          <p>
+            Esto es solo una pequeña porción del poder de Nix. En el futuro
+            podríamos hablar también sobre:
+          </p>
+          <ul>
+            <li>
+              NixOS: un sistema operativo que utiliza el gestor de paquetes Nix
+              para instalar software y el lenguaje Nix para configurar el
+              sistema, haciéndolo inquebrantable porque puede hacer reversiones
+              si algo sale mal.
+            </li>
+            <li>
+              Nix-Shells: un entorno creado dentro de una shell sin preocuparse
+              por el sistema operativo.
+            </li>
+            <li>
+              Nix flakes: una nueva forma de empaquetar y hacer Nix-shells,
+              paquetes y configuraciones replicables byte por byte.
+            </li>
+          </ul>
+        </section>
 
-      <footer>
-        <p>
-          Esta guía está basada en la tesis doctoral de Eelco Dolstra y en la
-          documentación de la comunidad Nix.
-        </p>
-        <div className="footer-links">
-          <a href="https://nixos.org" target="_blank">Sitio Web Oficial de Nix</a>
-          <a href="https://nixos.org/learn" target="_blank">Tutoriales de Nix</a>
-          <a href="https://github.com/NixOS/nixpkgs" target="_blank">Nixpkgs en GitHub</a>
-        </div>
-      </footer>
-    </div>
-  );
-};
+        <footer>
+          <p>
+            Esta guía está basada en la tesis doctoral de Eelco Dolstra y en la
+            documentación de la comunidad Nix.
+          </p>
+          <div className="footer-links">
+            <a href="https://nixos.org" target="_blank">
+              Sitio Web Oficial de Nix
+            </a>
+            <a href="https://nixos.org/learn" target="_blank">
+              Tutoriales de Nix
+            </a>
+            <a href="https://github.com/NixOS/nixpkgs" target="_blank">
+              Nixpkgs en GitHub
+            </a>
+          </div>
+        </footer>
+      </div>
+    );
+  };
 
   const Section_EN = () => {
     return (
@@ -981,9 +1036,15 @@ const Section_ES = () => {
             community documentation.
           </p>
           <div className="footer-links">
-            <a href="https://nixos.org" target="_blank">Official Nix Website</a>
-            <a href="https://nixos.org/learn" target="_blank">Nix Tutorials</a>
-            <a href="https://github.com/NixOS/nixpkgs" target="_blank">Nixpkgs GitHub</a>
+            <a href="https://nixos.org" target="_blank">
+              Official Nix Website
+            </a>
+            <a href="https://nixos.org/learn" target="_blank">
+              Nix Tutorials
+            </a>
+            <a href="https://github.com/NixOS/nixpkgs" target="_blank">
+              Nixpkgs GitHub
+            </a>
           </div>
         </footer>
       </div>
@@ -998,7 +1059,7 @@ const Section_ES = () => {
         theme={theme}
         handleTheme={handleTheme}
       />
-    {language === "EN" ? <Section_EN/> : <Section_ES/>}
+      {language === "EN" ? <Section_EN /> : <Section_ES />}
     </article>
   );
 }
