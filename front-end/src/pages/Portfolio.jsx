@@ -24,6 +24,7 @@ import {
   MysqlSVG,
   PostgreSVG,
   SQLiteSVG,
+  DockerSVG,
 } from "../components/SVG";
 
 function Portfolio({
@@ -56,7 +57,7 @@ function Portfolio({
       nameLabel: "Nombre",
       messageLabel: "Mensaje",
       btnMessage: "Enviar Mensaje",
-      btnSubmitted: "Enviado ✔️",
+      btnSubmitted: "Enviado √",
       slogan: "Vamos a construir un nuevo mundo",
     },
   };
@@ -83,7 +84,7 @@ function Portfolio({
       nameLabel: "Name",
       messageLabel: "Message",
       btnMessage: "Send Message",
-      btnSubmitted: "Sent ✔️",
+      btnSubmitted: "Sent √",
       slogan: "Let's start building a new world",
     },
   };
@@ -265,28 +266,18 @@ function Portfolio({
           link: "https://www.typescriptlang.org/",
         },
         {
-          name: "JavaScript",
-          icon: <JavascriptSVG />,
-          link: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/What_is_JavaScript",
-        },
-        {
           name: "Java",
           icon: <JavaSVG />,
           link: "https://www.java.com/en/download/help/whatis_java.html",
         },
         { name: "Dart", icon: <DartSVG />, link: "https://dart.dev/" },
         { name: "Nix", icon: <NixSVG />, link: "https://nixos.org/" },
+        {
+          name: "Docker",
+          icon: <DockerSVG />,
+          link: "https://www.docker.com/",
+        },
         { name: "Node.js", icon: <NodeSVG />, link: "https://nodejs.org/en" },
-        {
-          name: "HTMl",
-          icon: <HtmlSVG />,
-          link: "https://www.hostinger.com/tutorials/what-is-html",
-        },
-        {
-          name: "CSS",
-          icon: <CssSVG />,
-          link: "https://www.hostinger.com/tutorials/what-is-css",
-        },
         { name: "Git", icon: <GitSVG />, link: "https://git-scm.com/" },
         {
           name: "MySQL",
@@ -312,16 +303,6 @@ function Portfolio({
           name: "Debian",
           icon: <DebianSVG />,
           link: "https://www.debian.org/",
-        },
-        {
-          name: "Ubuntu",
-          icon: <UbuntuSVG />,
-          link: "https://ubuntu.com/desktop",
-        },
-        {
-          name: "Linux Mint",
-          icon: <MintSVG />,
-          link: "https://linuxmint.com/",
         },
       ];
 
@@ -515,7 +496,7 @@ function Portfolio({
             <form onSubmit={handleContactSubmit} className="contact-form">
               <div className="form-group">
                 <label htmlFor="name">
-                  {text.nameLabel + (contactData.name.error ? " ⚠️" : "")}
+                  {text.nameLabel + (contactData.name.error ? " !" : "")}
                 </label>
                 <input
                   className={contactData.name.error ? "error" : ""}
@@ -532,7 +513,7 @@ function Portfolio({
               </div>
               <div className="form-group">
                 <label htmlFor="email">
-                  Email {contactData.email.error ? " ⚠️" : ""}
+                  Email {contactData.email.error ? " !" : ""}
                 </label>
                 <input
                   className={contactData.email.error ? "error" : ""}
@@ -549,7 +530,7 @@ function Portfolio({
               </div>
               <div className="form-group">
                 <label htmlFor="message">
-                  {text.messageLabel + (contactData.message.error ? " ⚠️" : "")}
+                  {text.messageLabel + (contactData.message.error ? " !" : "")}
                 </label>
                 <textarea
                   className={contactData.message.error ? "error" : ""}
