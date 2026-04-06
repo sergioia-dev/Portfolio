@@ -31,7 +31,7 @@ function StaticAside({ language, handleLanguage, theme, handleTheme }) {
         <h1>Sergio IA</h1>
         <h3>{title}</h3>
         <div className="icons-container">
-          <a href="https://github.com/K1-mikaze" target="_blank">
+          <a href="https://github.com/sergioia-dev" target="_blank">
             <GithubSVG />
           </a>
           <a
