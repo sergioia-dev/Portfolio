@@ -1,5 +1,5 @@
 import app from "./app";
-import environment from "./configuration/environment";
+import environment from "./shared/security/configuration/environment";
 
 app.listen(environment.API);
 

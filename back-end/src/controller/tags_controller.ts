@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Router } from "express";
 import { getTags } from "../repository/tags_repository";
 
 const tags: RequestHandler = async (request, response) => {
@@ -10,4 +10,8 @@ const tags: RequestHandler = async (request, response) => {
   }
 };
 
-export { tags };
+const tagsRouter = Router();
+
+tagsRouter.get("/tags", tags);
+
+export default tagsRouter;

@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Router } from "express";
 import { getProjectsByLang } from "../repository/projects_repository";
 
 const projects: RequestHandler = async (request, response) => {
@@ -17,4 +17,8 @@ const projects: RequestHandler = async (request, response) => {
   }
 };
 
-export { projects };
+const projectRouter = Router();
+
+projectRouter.get("/projects", projects);
+
+export default projectRouter;

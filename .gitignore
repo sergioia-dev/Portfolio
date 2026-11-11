@@ -1,6 +1,5 @@
 # Environment
 .pgdata/
-.env
 build/
 dist/
 
@@ -9,3 +8,4 @@ node_modules/
 
 # Nix
 result
+.unipi/

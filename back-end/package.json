@@ -7,16 +7,17 @@
     "dev": "nodemon",
     "build": "tsc",
     "start": "node build/src/index.js",
-    "migrate:make": "npx knex migrate:make",
-    "migrate:latest": "npx knex migrate:latest",
-    "migrate:rollback": "npx knex migrate:rollback",
-    "migrate:status": "npx knex migrate:status",
-    "seeds:make": "npx knex seed:make",
-    "seeds:run": "npx knex seed:run"
+    "migrate:make": "pnpm exec knex migrate:make",
+    "migrate:latest": "pnpm exec knex migrate:latest",
+    "migrate:rollback": "pnpm exec knex migrate:rollback",
+    "migrate:status": "pnpm exec knex migrate:status",
+    "seeds:make": "pnpm exec knex seed:make",
+    "seeds:run": "pnpm exec knex seed:run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "packageManager": "pnpm@11.27.0",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.2.1",

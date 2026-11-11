@@ -1,8 +1,11 @@
 import express from "express";
-import blogRouter from "./route/blog_routes";
-import tagRouter from "./route/tag_routes";
-import projectRouter from "./route/projects_routes";
-import { speedLimiter, requestLimiter } from "./configuration/limiter";
+import blogRouter from "./controller/blogs_controller";
+import tagRouter from "./controller/tags_controller";
+import projectRouter from "./controller/projects_controller";
+import {
+  speedLimiter,
+  requestLimiter,
+} from "./shared/security/rate-limiting/limiter";
 import cors from "cors";
 import helmet from "helmet";
 

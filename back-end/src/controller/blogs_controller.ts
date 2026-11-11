@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Router } from "express";
 import {
   getBlogsByLang,
   getBlogsByLangAndQuantity,
@@ -65,24 +65,8 @@ const getBlogs: RequestHandler = async (request, response) => {
   }
 };
 
-// Route: /blogs/tag?lang=
-const getBlogsByTag: RequestHandler = async (request, response) => {
-  try {
-    const language: string | null =
-      String(request.query.lang).toUpperCase() || null;
+const blogRouter = Router({ mergeParams: true });
 
-    const tag: string | null = String(request.params.tag).toUpperCase() || null;
+blogRouter.get("/blogs", getBlogs);
 
-    if (language == null || tag === null)
-      return response.status(400).json({ error: "Bad Request" });
-
-    if (language !== "EN" && language !== "ES") {
-      return response.status(400).json({ error: "Bad Request" });
-    }
-  } catch (error) {
-    console.error("!!! Error getBlogsByTag :\n", error);
-    response.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-export { getBlogs, getBlogsByTag };
+export default blogRouter;

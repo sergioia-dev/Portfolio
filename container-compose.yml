@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: postgres-nix:latest
+    container_name: portfolio-container
+    ports:
+      - "5432:5432"
+volumes:
+  .pgdata:
+ 

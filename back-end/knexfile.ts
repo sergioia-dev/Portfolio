@@ -1,5 +1,5 @@
 import type { Knex } from "knex";
-import environment from "./src/configuration/environment";
+import environment from "./src/shared/security/configuration/environment";
 
 const config: Record<string, Knex.Config> = {
   development: {
