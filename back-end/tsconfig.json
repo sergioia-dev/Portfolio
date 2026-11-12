@@ -19,6 +19,6 @@
     //   "@prisma/client": ["node_modules/@prisma/client"]
     // }
   },
-  "include": ["src/**/*", "knexfile.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "build", "tsconfig.json" , "nodemon.js", "package.json", "package-lock.json"]
 }

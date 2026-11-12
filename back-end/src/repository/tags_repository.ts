@@ -1,14 +1,14 @@
-import db from "../database/database";
+import dataSource from "../shared/database/data-source";
+import Tag from "../shared/database/content/tag.entity";
 import { capitalizeFirstLetter } from "../util/string_manipulation";
 
 const getTags = async () => {
-  const dbResponse = await db("tags").select("name", "id");
-  if (dbResponse.length > 0) {
-    dbResponse.map((tag) => {
-      tag.name = capitalizeFirstLetter(tag.name);
-    });
-  }
-  return dbResponse;
+  const tags = await dataSource.getRepository(Tag).find();
+
+  return tags.map((tag) => ({
+    name: capitalizeFirstLetter(tag.name),
+    id: tag.id,
+  }));
 };
 
 export { getTags };

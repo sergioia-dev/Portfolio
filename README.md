@@ -68,8 +68,8 @@ The application follows a modern three-tier architecture with comprehensive docu
 │   (React)       │◄──►│   (Express.js)  │◄──►│  (PostgreSQL)  │
 ├─────────────────┤    ├─────────────────┤    ├─────────────────┤
 │ • Multi-language │    │ • RESTful API   │    │ • Multilingual  │
-│ • Theme System  │    │ • Security      │    │ • Migrations    │
-│ • Components    │    │ • Rate Limiting │    │ • Seeding       │
+│ • Theme System  │    │ • Security      │    │ • Schema Sync   │
+│ • Components    │    │ • Rate Limiting │    │ • TypeORM       │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
@@ -110,10 +110,8 @@ This project maintains comprehensive, architecture-focused documentation organiz
 
 | Document                                                          | Focus               | Key Topics                                            |
 | ----------------------------------------------------------------- | ------------------- | ----------------------------------------------------- |
-| [Database Architecture](./docs/database/DATABASE-ARCHITECTURE.md) | Database design     | Schema patterns, relationships, Knex.js integration   |
+| [Database Architecture](./docs/database/DATABASE-ARCHITECTURE.md) | Database design     | TypeORM entities, relationships, schema design        |
 | [Database Schema](./docs/database/DATABASE-SCHEMA.md)             | Table definitions   | Complete schema, constraints, indexing, relationships |
-| [Migration System](./docs/database/MIGRATION-SYSTEM.md)           | Schema evolution    | Version control, migrations, rollback procedures      |
-| [Seed System](./docs/database/SEED-SYSTEM.md)                     | Data initialization | Test data, environment-specific seeding, validation   |
 
 ## Key Features
 
@@ -165,13 +163,12 @@ This project maintains comprehensive, architecture-focused documentation organiz
 - **Runtime**: Node.js with TypeScript for type safety
 - **Framework**: Express.js 5.2.1 for RESTful API development
 - **Security**: Helmet.js, CORS, Express Rate Limiter
-- **Database**: PostgreSQL with Knex.js query builder
+- **Database**: PostgreSQL with TypeORM
 
 ### Database
 
 - **Engine**: PostgreSQL for robust relational data storage
-- **Migration**: Knex.js migrations for schema version control
-- **Seeding**: Comprehensive seed data for development and testing
+- **Schema**: TypeORM entities, synchronized automatically on startup
 - **Architecture**: Multilingual support with translation tables
 
 ## Quick Start
@@ -188,12 +185,12 @@ cd Portfolio
 # Start PostgreSQL database (one-time setup)
 nix run .#db-start
 
-# Setup backend (automatically installs dependencies, runs migrations, and seeds)
-nix develop .#Backend -- npm install && npm run migrate:latest && npm run seeds:run
+# Setup backend (TypeORM creates the tables on first start)
+nix develop .#Backend -- pnpm install
 
 # Start development servers
 # Terminal 1 - Back-end (in Nix environment)
-nix develop .#Backend -- npm run dev
+nix develop .#Backend -- pnpm run dev
 
 # Terminal 2 - Frontend (in Nix environment)
 nix develop .#Frontend -- npm run dev
@@ -208,17 +205,12 @@ nix develop .#Frontend -- npm run dev
 cd Portfolio
 
 # Install dependencies (run in both directories)
-cd back-end && npm install
+cd back-end && pnpm install
 cd ../front-end && npm install
-
-# Setup database (requires manual PostgreSQL configuration)
-cd ../back-end
-
-npm run migrate:latest
-npm run seeds:run
+# Database tables are created automatically by TypeORM on server start
 
 # Start development servers
-npm run dev
+pnpm run dev
 
 # Terminal 2 - Front-end
 cd ../front-end
@@ -271,8 +263,6 @@ nix run .#Backend
 
 1. Review [Database Architecture](./docs/database/DATABASE-ARCHITECTURE.md)
 2. Study [Schema Details](./docs/database/DATABASE-SCHEMA.md)
-3. Learn [Migration System](./docs/database/MIGRATION-SYSTEM.md)
-4. Understand [Seed System](./docs/database/SEED-SYSTEM.md)
 
 ## 🔧 Configuration
 

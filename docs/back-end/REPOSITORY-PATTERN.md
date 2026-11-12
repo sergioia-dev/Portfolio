@@ -2,16 +2,18 @@
 
 ## Overview
 
-The repository layer provides a data access abstraction that separates the business logic from data storage concerns. This implementation uses the Repository Pattern with Knex.js as the query builder, providing database-agnostic data operations.
+The repository layer provides a data access abstraction that separates the business logic from data storage concerns. This implementation uses the Repository Pattern on top of TypeORM repositories, keeping SQL generation out of controllers.
 
 ## Repository Architecture
 
 ### Pattern Implementation
 
 ```
-Controller → Repository → Database (Knex) → PostgreSQL
-     ↓           ↓              ↓              ↓
-Business   Data Access   Query Builder   Data Storage
+Controller → Repository → TypeORM Repository → PostgreSQL
+     ↓           ↓                ↓                 ↓
+Business   Data Access       Entity Mapping     Data Storage
+Logic     Abstraction       Query Builder      Persistence
+```
 Logic     Abstraction    SQL Generation   Persistence
 ```
 
@@ -59,16 +61,21 @@ Logic     Abstraction    SQL Generation   Persistence
 
 ```typescript
 // Common repository pattern
-import db from "../database/database";
-import { capitalizeFirstLetter } from "../util/string_manipulation";
+import dataSource from "../shared/database/data-source";
+import Blog from "../shared/database/content/blog.entity";
 
-const getEntityByLang = async (language: string, entity: string) => {
-  const response = await db(entity)
-    .select(/* fields */)
-    .join(/* translations */)
-    .where("language", "=", language);
-
-  return transformResponse(response);
+const getBlogsByLang = async (language: string) => {
+  return dataSource
+    .getRepository(Blog)
+    .createQueryBuilder("blog")
+    .innerJoinAndSelect(
+      "blog.translations",
+      "translation",
+      "translation.language = :language",
+      { language },
+    )
+    .leftJoinAndSelect("blog.tags", "tag")
+    .getMany();
 };
 ```
 
@@ -233,11 +240,13 @@ const enrichResponse = async (data: any[], enricher: Function) => {
 ```typescript
 const repositoryOperation = async (params: any) => {
   try {
-    const result = await db("table")
-      .select("*")
-      .where("condition", params.condition);
+    const result = await dataSource
+      .getRepository(Blog)
+      .createQueryBuilder("blog")
+      .where("blog.id = :id", { id: params.id })
+      .getOne();
 
-    return transformData(result);
+    return result;
   } catch (error) {
     // Log database errors
     console.error("Repository error:", error);

@@ -143,7 +143,7 @@ docs/back-end/
 - **Runtime**: Node.js with TypeScript
 - **Framework**: Express.js 5.2.1
 - **Security**: Helmet.js, CORS, Express Rate Limiter
-- **Database Integration**: PostgreSQL via Knex.js (abstracted)
+- **Database Integration**: PostgreSQL via TypeORM
 
 ### Architecture Pattern
 

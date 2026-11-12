@@ -1,42 +1,31 @@
-import db from "../database/database";
+import dataSource from "../shared/database/data-source";
+import Project from "../shared/database/content/project.entity";
 import { capitalizeFirstLetter } from "../util/string_manipulation";
 
 const getProjectsByLang = async (language: string) => {
-  const response = await db("projects")
-    .select(
-      "projects.id",
-      "projects.website",
-      "projects.repository",
-      "project_translations.title",
-      "project_translations.description",
+  const projects = await dataSource
+    .getRepository(Project)
+    .createQueryBuilder("project")
+    .innerJoinAndSelect(
+      "project.translations",
+      "translation",
+      "translation.language = :language",
+      { language },
     )
-    .join(
-      "project_translations",
-      "project_translations.project_id",
-      "projects.id",
-    )
-    .where("project_translations.language", "=", language);
+    .leftJoinAndSelect("project.tags", "tag")
+    .getMany();
 
-  const projectWithTags = await Promise.all(
-    response.map(async (row) => {
-      const searchTags = await getTagsByProjectsId(row.id);
-      searchTags.map((tag) => (tag.name = capitalizeFirstLetter(tag.name)));
-      return {
-        ...row,
-
-        tags: searchTags,
-      };
-    }),
-  );
-
-  return projectWithTags;
-};
-
-const getTagsByProjectsId = async (id: number) => {
-  return await db("project_tags")
-    .select("tags.name", "tags.id")
-    .join("tags", "tags.id", "project_tags.tag_id")
-    .where("project_tags.project_id", "=", id);
+  return projects.map((project) => ({
+    id: project.id,
+    website: project.website,
+    repository: project.repository,
+    title: project.translations[0].title,
+    description: project.translations[0].description,
+    tags: project.tags.map((tag) => ({
+      name: capitalizeFirstLetter(tag.name),
+      id: tag.id,
+    })),
+  }));
 };
 
 export { getProjectsByLang };

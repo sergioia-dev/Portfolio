@@ -1,163 +1,72 @@
-import db from "../database/database";
+import dataSource from "../shared/database/data-source";
+import Blog from "../shared/database/content/blog.entity";
 import { capitalizeFirstLetter } from "../util/string_manipulation";
 
-const getBlogsByLang = async (language: string) => {
-  const response = await db("blogs")
-    .select(
-      "blogs.id",
-      "blogs.url",
-      "blogs.image_path",
-      "blog_translations.title",
-      "blog_translations.description",
+interface BlogFilters {
+  match?: string;
+  tag?: string;
+  quantity?: number;
+}
+
+const findBlogs = async (language: string, filters: BlogFilters) => {
+  const query = dataSource
+    .getRepository(Blog)
+    .createQueryBuilder("blog")
+    .innerJoinAndSelect(
+      "blog.translations",
+      "translation",
+      "translation.language = :language",
+      { language },
     )
-    .join("blog_translations", "blog_translations.blog_id", "blogs.id")
-    .where("blog_translations.language", "=", language);
+    .leftJoinAndSelect("blog.tags", "tag");
 
-  const blogWithTags = await Promise.all(
-    response.map(async (row) => {
-      const searchTags = await getTagsByBlogsId(row.id);
-      searchTags.map((tag) => (tag.name = capitalizeFirstLetter(tag.name)));
-      return {
-        ...row,
+  if (filters.match !== undefined) {
+    query.andWhere("translation.title ILIKE :match", {
+      match: `%${filters.match}%`,
+    });
+  }
 
-        tags: searchTags,
-      };
-    }),
-  );
+  if (filters.tag !== undefined) {
+    query.innerJoin("blog.tags", "filterTag", "filterTag.name = :tag", {
+      tag: filters.tag,
+    });
+  }
 
-  return blogWithTags;
+  if (filters.quantity !== undefined) {
+    query.limit(filters.quantity);
+  }
+
+  const blogs = await query.getMany();
+
+  return blogs.map((blog) => ({
+    id: blog.id,
+    url: blog.url,
+    image_path: blog.imagePath,
+    title: blog.translations[0].title,
+    description: blog.translations[0].description,
+    tags: blog.tags.map((tag) => ({
+      name: capitalizeFirstLetter(tag.name),
+      id: tag.id,
+    })),
+  }));
 };
 
-const getBlogsByLangAndQuantity = async (
-  language: string,
-  quantity: number,
-) => {
-  const response = await db("blogs")
-    .select(
-      "blogs.id",
-      "blogs.url",
-      "blogs.image_path",
-      "blog_translations.title",
-      "blog_translations.description",
-    )
-    .join("blog_translations", "blog_translations.blog_id", "blogs.id")
-    .where("blog_translations.language", "=", language)
-    .limit(quantity);
+const getBlogsByLang = (language: string) => findBlogs(language, {});
 
-  const blogWithTags = await Promise.all(
-    response.map(async (row) => {
-      const searchTags = await getTagsByBlogsId(row.id);
-      searchTags.map((tag) => (tag.name = capitalizeFirstLetter(tag.name)));
-      return {
-        ...row,
+const getBlogsByLangAndQuantity = (language: string, quantity: number) =>
+  findBlogs(language, { quantity });
 
-        tags: searchTags,
-      };
-    }),
-  );
+const getBlogsByLangAndMatch = (language: string, match: string) =>
+  findBlogs(language, { match });
 
-  return blogWithTags;
-};
+const getBlogsByLangAndTag = (language: string, tag: string) =>
+  findBlogs(language, { tag });
 
-const getBlogsByLangAndMatch = async (language: string, match: string) => {
-  const response = await db("blogs")
-    .select(
-      "blogs.id",
-      "blogs.url",
-      "blogs.image_path",
-      "blog_translations.title",
-      "blog_translations.description",
-    )
-    .join("blog_translations", "blog_translations.blog_id", "blogs.id")
-    .where("blog_translations.language", "=", language)
-    .andWhere("blog_translations.title", "ilike", `%${match}%`);
-  // .whereRaw("UPPER(blog_translations.title) LIKE ? ESCAPE \'\\'", [
-  //   `%${match}%`,
-  // ]);
-
-  const blogWithTags = await Promise.all(
-    response.map(async (row) => {
-      const searchTags = await getTagsByBlogsId(row.id);
-      searchTags.map((tag) => (tag.name = capitalizeFirstLetter(tag.name)));
-      return {
-        ...row,
-
-        tags: searchTags,
-      };
-    }),
-  );
-  return blogWithTags;
-};
-
-const getBlogsByLangAndTag = async (language: string, tag: string) => {
-  const response = await db("blogs")
-    .select(
-      "blogs.id",
-      "blogs.url",
-      "blogs.image_path",
-      "blog_translations.title",
-      "blog_translations.description",
-    )
-    .join("blog_translations", "blog_translations.blog_id", "blogs.id")
-    .join("blog_tags", "blog_tags.blog_id", "blogs.id")
-    .join("tags", "tags.id", "blog_tags.tag_id")
-    .where("blog_translations.language", "=", language)
-    .andWhere("tags.name", "=", tag);
-
-  const blogWithTags = await Promise.all(
-    response.map(async (row) => {
-      const searchTags = await getTagsByBlogsId(row.id);
-      searchTags.map((tag) => (tag.name = capitalizeFirstLetter(tag.name)));
-      return {
-        ...row,
-
-        tags: searchTags,
-      };
-    }),
-  );
-  return blogWithTags;
-};
-
-const getBlogsByLangAndTagAndQuantity = async (
+const getBlogsByLangAndTagAndQuantity = (
   language: string,
   tag: string,
   quantity: number,
-) => {
-  const response = await db("blogs")
-    .select(
-      "blogs.id",
-      "blogs.url",
-      "blogs.image_path",
-      "blog_translations.title",
-      "blog_translations.description",
-    )
-    .join("blog_translations", "blog_translations.blog_id", "blogs.id")
-    .join("blog_tags", "blog_tags.blog_id", "blogs.id")
-    .join("tags", "tags.id", "blog_tags.tag_id")
-    .where("blog_translations.language", "=", language)
-    .andWhere("tags.name", "=", tag)
-    .limit(quantity);
-
-  const blogWithTags = await Promise.all(
-    response.map(async (row) => {
-      const searchTags = await getTagsByBlogsId(row.id);
-      searchTags.map((tag) => (tag.name = capitalizeFirstLetter(tag.name)));
-      return {
-        ...row,
-
-        tags: searchTags,
-      };
-    }),
-  );
-  return blogWithTags;
-};
-
-const getTagsByBlogsId = async (id: number) => {
-  return await db("blog_tags")
-    .select("tags.name", "tags.id")
-    .join("tags", "tags.id", "blog_tags.tag_id")
-    .where("blog_tags.blog_id", "=", id);
-};
+) => findBlogs(language, { tag, quantity });
 
 export {
   getBlogsByLang,

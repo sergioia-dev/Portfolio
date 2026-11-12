@@ -1,298 +1,97 @@
-# Database Architecture Documentation
+# Database Architecture
 
-## Overview
+PostgreSQL database accessed through TypeORM. Entities are the single source of truth for the schema; the DataSource runs with `synchronize: true`, so tables and constraints are created and updated from the entity classes at startup.
 
-The database layer implements a PostgreSQL-based architecture with Knex.js as the query builder and migration tool. It follows a multilingual content management pattern with clear separation of concerns between data entities and their translations.
+## Stack
 
-## Database Architecture
+- **Database**: PostgreSQL
+- **ORM**: TypeORM
+- **Driver**: `pg`
+- **Schema management**: `synchronize: true` (no migrations)
 
-### Core Design Principles
+## DataSource
 
-- **Multilingual Support**: Separate translation tables for content localization
-- **Tag-Based Categorization**: Many-to-many relationships for flexible tagging
-- **Migration-Driven Schema**: Version-controlled database schema evolution
-- **Seed-Driven Development**: Reproducible test data for development
-
-### Architecture Pattern
-
-```
-┌─────────────────┐    ┌──────────────────┐    ┌──────────┐
-│   Core Entities │    │   Translations   │    │   Tags   │
-├─────────────────┤    ├──────────────────┤    ├──────────┤
-│     Blogs       │◄───┤ Blog_Translations│    │ Tags     │
-│     Projects    │◄───┤ Project_Translations│   └──────────┘
-└─────────────────┘    └──────────────────┘           │
-           │                      │                   │
-           └──────────────────────┼───────────────────┘
-                                  │
-                    ┌──────────────────┐
-                    │  Relationship    │
-                    │  Tables          │
-                    ├──────────────────┤
-                    │  Blog_Tags       │
-                    │  Project_Tags    │
-                    └──────────────────┘
-```
-
-## Database Configuration
-
-### Knex.js Configuration (`knexfile.ts`)
+`back-end/src/shared/database/data-source.ts`:
 
 ```typescript
-const config: Record<string, Knex.Config> = {
-  development: {
-    client: "pg",
-    connection: {
-      host: environment.DB_HOST,
-      port: Number(environment.DB_PORT),
-      user: environment.DB_USER,
-      password: environment.DB_PASS,
-      database: environment.DB_NAME,
-    },
-    migrations: {
-      directory: "./src/database/migrations",
-      extension: "ts",
-    },
-    seeds: {
-      directory: "./src/database/seeds",
-    },
-    debug: true,
-  },
-  production: {
-    client: "pg",
-    connection: environment.DATABASE_URL,
-    migrations: {
-      directory: "./src/database/migrations",
-    },
-    pool: {
-      min: 2,
-      max: 10,
-    },
-  },
-};
+const dataSource = new DataSource({
+  type: "postgres",
+  url: environment.DATABASE_URL!,
+  entities: [__dirname + "/**/*.entity.{ts,js}"],
+  synchronize: true,
+});
+
+export default dataSource;
 ```
 
-### Database Connection (`database.ts`)
+`back-end/src/index.ts` initializes it before the server starts and exits if initialization fails:
 
 ```typescript
-import knex, { Knex } from "knex";
-import config from "../../knexfile";
-import environment from "../configuration/environment";
-
-const env = environment.MODE;
-const knexConfig: Knex.Config = config[env];
-
-const db: Knex = knex(knexConfig);
-
-export default db;
+dataSource
+  .initialize()
+  .then(() => {
+    app.listen(environment.API);
+  })
+  .catch((error) => {
+    console.error("!!! Error initializing database :\n", error);
+    process.exit(1);
+  });
 ```
 
-**Features**:
-
-- **Environment-Based Configuration**: Development vs production settings
-- **Connection Pooling**: Production connection management
-- **Type Safety**: TypeScript integration
-- **Debug Support**: SQL query logging in development
-
-## Schema Architecture
-
-### Entity Relationship Overview
-
-#### 1. Blog System
+## Entity Organization
 
 ```
-┌──────────────┐    ┌──────────────────┐    ┌──────────┐
-│     Blogs     │    │ Blog_Translations│    │   Tags   │
-├──────────────┤    ├──────────────────┤    ├──────────┤
-│ id (PK)      │◄───┤ id (PK)          │    │ id (PK)  │
-│ image_path   │    │ blog_id (FK)     │    │ name     │
-│ url          │    │ language         │    └──────────┘
-│ created_at   │    │ title            │           │
-│ updated_at   │    │ description      │           │
-└──────────────┘    │ created_at       │           │
-                    │ updated_at       │           │
-                    └──────────────────┘           │
-                           │                        │
-                           │                        │
-                    ┌──────────────────┐           │
-                    │   Blog_Tags      │           │
-                    ├──────────────────┤           │
-                    │ blog_id (FK)     │◄──────────┘
-                    │ tag_id (FK)      │
-                    └──────────────────┘
+back-end/src/shared/database/
+├── data-source.ts
+├── content/
+│   ├── blog.entity.ts
+│   ├── blog_translation.entity.ts
+│   ├── project.entity.ts
+│   ├── project_translation.entity.ts
+│   └── tag.entity.ts
+└── user/
+    ├── provider.entity.ts
+    ├── role.entity.ts
+    ├── functionality.entity.ts
+    └── user.entity.ts
 ```
 
-#### 2. Project System
+## Content Model
 
 ```
-┌──────────────┐    ┌──────────────────┐    ┌──────────┐
-│   Projects   │    │ Project_Translations│  │   Tags   │
-├──────────────┤    ├──────────────────┤    ├──────────┤
-│ id (PK)      │◄───┤ id (PK)          │    │ id (PK)  │
-│ website      │    │ project_id (FK)  │    │ name     │
-│ repository   │    │ language         │    └──────────┘
-│ created_at   │    │ title            │           │
-│ updated_at   │    │ description      │           │
-└──────────────┘    │ created_at       │           │
-                    │ updated_at       │           │
-                    └──────────────────┘           │
-                           │                        │
-                           │                        │
-                    ┌──────────────────┐           │
-                    │  Project_Tags    │           │
-                    ├──────────────────┤           │
-                    │ project_id (FK)  │◄──────────┘
-                    │ tag_id (FK)      │
-                    └──────────────────┘
+blogs 1 ─── n blog_translations        (language: EN | ES)
+blogs n ─── n tags                     (blog_tags)
+projects 1 ─── n project_translations  (language: EN | ES)
+projects n ─── n tags                  (project_tags)
 ```
 
-## Migration Architecture
+- Translations store `title` (varchar 150) and `description` (text) per language.
+- `tags.name` is unique (varchar 50).
+- Junction tables use composite primary keys and cascade deletes.
+- `created_at` / `updated_at` are `timestamptz` with `DEFAULT now()`.
 
-### Migration Strategy
-
-#### Migration Files Structure
-
-```
-src/database/migrations/
-├── 20260102215024_blog_tags_tables.ts
-└── 20260124221813_project_table.ts
-```
-
-### Migration Implementation
-
-#### Blog System Migration (`20260102215024_blog_tags_tables.ts`)
-
-**Tables Created**:
-
-1. **blogs** - Core blog entities
-2. **blog_translations** - Multilingual content
-3. **tags** - Shared categorization
-4. **blog_tags** - Many-to-many relationships
-
-**Migration Order**:
-
-- Core entities first (blogs, tags)
-- Translation tables second
-- Relationship tables last
-
-#### Project System Migration (`20260124221813_project_table.ts`)
-
-**Tables Created**:
-
-1. **projects** - Core project entities
-2. **project_translations** - Multilingual content
-3. **project_tags** - Many-to-many relationships
-
-**Design Consistency**:
-
-- Same pattern as blog system
-- Shared tags table
-- Consistent foreign key relationships
-
-### Migration Management
-
-#### Migration Commands
-
-```bash
-# Create new migration
-npm run migrate:make -- create_new_table
-
-# Run pending migrations
-npm run migrate:latest
-
-# Rollback last migration
-npm run migrate:rollback
-
-# Check migration status
-npm run migrate:status
-```
-
-#### Migration Best Practices
-
-- **Incremental Changes**: One logical change per migration
-- **Reversible Operations**: Always implement down() method
-- **Dependency Order**: Create tables before relationships
-- **Data Preservation**: Consider data loss in rollbacks
-
-## Seed Architecture
-
-### Seed Strategy
-
-#### Seed Files Structure
+## Security Model
 
 ```
-src/database/seeds/
-├── add_tags.ts
-├── add_projects.ts
-└── insert_blog_tags.ts
+users n ─── 1 providers                (provider_id)
+users n ─── 1 roles                    (rol_id)
+roles n ─── n functionalities          (rol_funcionalities)
 ```
 
-### Seed Implementation
+- All primary keys are application-generated UUIDs.
+- `users.username` and `users.email` are unique and nullable; `password` is required.
+- Authorization is role-based: a role owns a set of functionalities through the `rol_funcionalities` junction table.
 
-#### Tags Seed (`add_tags.ts`)
+## Repository Access
 
-**Purpose**: Initialize shared tag system
-**Tags Created**:
+Repositories obtain typed repositories from the shared DataSource and build queries with the TypeORM query builder:
 
-- **Frontend**: HTML, CSS, REACT, VUE, ANGULAR
-- **Backend**: EXPRESS, NODE, SPRING, DJANGO
-- **Languages**: JAVASCRIPT, TYPESCRIPT, JAVA, RUST, PYTHON
-- **DevOps**: DOCKER, KUBERNETES, LINUX, NIXOS, NIX
-- **Databases**: POSTGRESQL, MONGODB
-- **Cloud**: AWS
-- **Tools**: GIT
-
-**Design Features**:
-
-- **Comprehensive Coverage**: Technology stack representation
-- **Uppercase Convention**: Consistent naming
-- **Shared Resource**: Used across blogs and projects
-
-#### Projects Seed (`add_projects.ts`)
-
-**Purpose**: Initialize project data with translations
-**Projects Created**:
-
-1. **Portfolio Website**: Personal portfolio and blog
-2. **Task Manager**: Web application for task management
-
-**Translation Strategy**:
-
-- **Bilingual Content**: EN and ES translations
-- **Consistent Structure**: Same content pattern
-- **Tag Association**: Links to technology tags
-
-#### Blog Tags Seed (`insert_blog_tags.ts`)
-
-**Purpose**: Initialize blog data with complex tag relationships
-**Blogs Created**:
-
-1. **Linux Administration Guide**: System administration content
-2. **React Web Development**: Frontend development guide
-3. **Rust Performance Tips**: Performance optimization content
-
-**Tag Association Strategy**:
-
-- **Varied Tag Sets**: Different tag combinations per blog
-- **Technology-Specific**: Relevant tags for each topic
-- **Cross-Reference**: Shared tags across content
-
-### Seed Management
-
-#### Seed Commands
-
-```bash
-# Run all seeds
-npm run seeds:run
-
-# Create new seed file
-npm run seeds:make -- new_seed_file
+```typescript
+dataSource.getRepository(Blog).createQueryBuilder("blog")
 ```
 
-#### Seed Best Practices
+See [Repository Pattern](../back-end/REPOSITORY-PATTERN.md) for the conventions used by the content repositories.
 
-- **Idempotent Operations**: Clear before insert
-- **Dependency Order**: Create dependent data first
-- **Realistic Data**: Representative of production data
-- **Relationship Integrity**: Maintain foreign key constraints
+## Schema Changes
 
+Edit or add an entity class; TypeORM applies the change on the next startup. Because synchronization is enabled in every environment, review entity changes carefully before deploying — TypeORM alters or drops columns to match the entities.

@@ -28,15 +28,10 @@ Agentic coding guidelines for this repository.
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start with nodemon (dev mode) |
-| `npm run build` | Compile TypeScript |
-| `npm run start` | Run production build |
-| `npm run migrate:make <name>` | Create migration |
-| `npm run migrate:latest` | Run migrations |
-| `npm run migrate:rollback` | Rollback last migration |
-| `npm run migrate:status` | Check migration status |
-| `npm run seeds:run` | Run seed files |
-| **Single test:** No test framework configured. |
+| `pnpm run dev` | Start with nodemon (dev mode) |
+| `pnpm run build` | Compile TypeScript |
+| `pnpm run start` | Run production build |
+| `pnpm test` | Run tests (node:test + tsx) |
 
 ---
 
@@ -110,7 +105,7 @@ src/
 ├── repository/    # Database queries
 ├── route/         # Route definitions
 ├── configuration/ # Environment & middleware
-├── database/     # Migrations & seeds
+├── shared/        # TypeORM database & security
 └── util/          # Utility functions
 ```
 
@@ -150,10 +145,10 @@ try {
 
 ## Database
 
-- **ORM**: Knex.js with PostgreSQL
-- Migrations in `src/database/migrations/`
-- Seeds in `src/database/seeds/`
-- Run migrations before running seeds for fresh data
+- **ORM**: TypeORM with PostgreSQL
+- Entities in `src/shared/database/`
+- `synchronize: true` in the DataSource keeps the schema in sync with the entities (no migrations)
+- The DataSource is initialized in `src/index.ts` before the server starts
 
 ---
 
@@ -173,6 +168,6 @@ Base URL configured in `environment.js` / `environment.ts`
 
 ## Notes
 
-- Both projects use separate `node_modules` - run `npm install` in each directory
+- Both projects use separate `node_modules` - run `pnpm install` in `back-end` and `npm install` in `front-end`
 - No existing .cursorrules or Copilot rules found
-- No test frameworks configured in either project
+- Back-end tests live in `back-end/test` and run with `pnpm test`

@@ -7,12 +7,7 @@
     "dev": "nodemon",
     "build": "tsc",
     "start": "node build/src/index.js",
-    "migrate:make": "pnpm exec knex migrate:make",
-    "migrate:latest": "pnpm exec knex migrate:latest",
-    "migrate:rollback": "pnpm exec knex migrate:rollback",
-    "migrate:status": "pnpm exec knex migrate:status",
-    "seeds:make": "pnpm exec knex seed:make",
-    "seeds:run": "pnpm exec knex seed:run"
+    "test": "ENV_MODE=development API_PORT=5678 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres JWT_ACCESS_SECRET=test-access-secret JWT_REFRESH_SECRET=test-refresh-secret node --import tsx --test \"test/**/*.test.ts\""
   },
   "keywords": [],
   "author": "",
@@ -24,12 +19,15 @@
     "express-rate-limit": "^8.2.1",
     "express-slow-down": "^3.0.1",
     "helmet": "^8.1.0",
-    "knex": "^3.1.0",
-    "pg": "^8.16.3"
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^1.1.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.0.3",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",

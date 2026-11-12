@@ -42,6 +42,7 @@
           postgresql
           nodejs
           corepack
+          husky
         ];
 
         API_PORT = 5678;
