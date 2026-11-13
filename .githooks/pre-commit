@@ -1,0 +1,24 @@
+#!/bin/sh
+
+CHANGED_FILES_FRONT=$(git diff --cached --name-only --diff-filter=ACM -- 'front-end/')
+CHANGED_FILES_BACK=$(git diff --cached --name-only --diff-filter=ACM -- 'back-end/')
+
+# Track whether any suite failed. Non-zero blocks the commit.
+FAILED=0
+
+if [ -n "$CHANGED_FILES_FRONT" ]; then
+    echo "Front-end changes detected. Running front-end tests..."
+    # Subshell so `cd` doesn't leak into the rest of the script.
+    ( cd front-end && pnpm run build ) || FAILED=1
+else
+    echo "No changes in front-end. Skipping tests."
+fi
+
+if [ -n "$CHANGED_FILES_BACK" ]; then
+    echo "Back-end changes detected. Running back-end tests..."
+    ( cd back-end && pnpm run test ) || FAILED=1
+else
+    echo "No changes in back-end. Skipping tests."
+fi
+
+exit $FAILED
