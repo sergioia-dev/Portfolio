@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { DataSource } from "typeorm";
+import type { DataSource } from "typeorm";
 import Language from "../../src/shared/database/language/language.entity";
 
 const LANGUAGES = ["SPANISH", "ENGLISH"];

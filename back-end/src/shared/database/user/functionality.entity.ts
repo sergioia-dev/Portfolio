@@ -12,6 +12,9 @@ export default class Functionality {
   @Column({ type: "varchar", length: 500 })
   description!: string;
 
-  @ManyToMany(() => Role, (role) => role.functionalities)
+  @ManyToMany(
+    () => Role,
+    (role) => role.functionalities,
+  )
   roles!: Role[];
 }

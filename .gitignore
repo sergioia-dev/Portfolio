@@ -4,6 +4,7 @@ build/
 dist/
 
 # Javascript / Typescript
+coverage/
 node_modules/
 
 # Nix

@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryColumn,
-} from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from "typeorm";
 import Functionality from "./functionality.entity";
 
 @Entity({ name: "roles" })
@@ -18,7 +12,10 @@ export default class Role {
   @Column({ type: "varchar", length: 500 })
   description!: string;
 
-  @ManyToMany(() => Functionality, (functionality) => functionality.roles)
+  @ManyToMany(
+    () => Functionality,
+    (functionality) => functionality.roles,
+  )
   @JoinTable({
     name: "rol_funcionalities",
     joinColumn: { name: "rol_id", referencedColumnName: "id" },

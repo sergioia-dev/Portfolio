@@ -1,18 +1,13 @@
-import express from "express";
-import {
-  speedLimiter,
-  requestLimiter,
-} from "./shared/security/rate-limiting/limiter";
 import cors from "cors";
+import express from "express";
 import helmet from "helmet";
+import { requestLimiter, speedLimiter } from "./shared/security/rate-limiting/limiter";
 
 const app = express();
 
 app.use(
   cors({
-    origin: [
-      "https://portfoliofrontend-dkvq0mq5j-k1s-projects-ff94b943.vercel.app/",
-    ],
+    origin: ["https://portfoliofrontend-dkvq0mq5j-k1s-projects-ff94b943.vercel.app/"],
     methods: ["GET"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),

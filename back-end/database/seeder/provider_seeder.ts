@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { DataSource } from "typeorm";
+import type { DataSource } from "typeorm";
 import Provider from "../../src/shared/database/user/provider.entity";
 
 const PROVIDERS = ["LOCAL", "GITHUB"];

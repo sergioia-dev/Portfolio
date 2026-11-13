@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import ExceptionId from "./exception_id.entity";
 import Language from "../language/language.entity";
+import ExceptionId from "./exception_id.entity";
 
 @Entity({ name: "exceptions" })
 export default class Exception {

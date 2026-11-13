@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { DataSource } from "typeorm";
+import type { DataSource } from "typeorm";
 import Exception from "../../src/shared/database/exception/exception.entity";
 import ExceptionId from "../../src/shared/database/exception/exception_id.entity";
 import Language from "../../src/shared/database/language/language.entity";
@@ -46,13 +46,11 @@ const seedExceptions = async (dataSource: DataSource) => {
   });
   const codeToId = new Map(storedIds.map((stored) => [stored.code, stored.id]));
 
-  const missingIds = EXCEPTIONS.filter((item) => !codeToId.has(item.code)).map(
-    (item) => {
-      const id = randomUUID();
-      codeToId.set(item.code, id);
-      return { id, code: item.code };
-    },
-  );
+  const missingIds = EXCEPTIONS.filter((item) => !codeToId.has(item.code)).map((item) => {
+    const id = randomUUID();
+    codeToId.set(item.code, id);
+    return { id, code: item.code };
+  });
   if (missingIds.length > 0) await exceptionIdRepository.save(missingIds);
 
   const storedMessages = await exceptionRepository.find({
@@ -70,9 +68,7 @@ const seedExceptions = async (dataSource: DataSource) => {
       { languageId: spanish.id, message: item.spanish },
     ]
       .filter((translation) => !storedKeys.has(messageKey(id, translation.languageId)))
-      .map((translation) =>
-        exceptionRepository.create({ id, ...translation }),
-      );
+      .map((translation) => exceptionRepository.create({ id, ...translation }));
   });
   if (missingMessages.length > 0) {
     await exceptionRepository.save(missingMessages);

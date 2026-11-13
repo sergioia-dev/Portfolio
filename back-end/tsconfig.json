@@ -12,7 +12,7 @@
     "resolveJsonModule": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
+    "sourceMap": true
     // "moduleResolution": "node",
     // "baseUrl": ".",
     // "paths": {
@@ -20,5 +20,12 @@
     // }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "build", "tsconfig.json" , "nodemon.js", "package.json", "package-lock.json"]
+  "exclude": [
+    "node_modules",
+    "build",
+    "tsconfig.json",
+    "nodemon.js",
+    "package.json",
+    "package-lock.json"
+  ]
 }

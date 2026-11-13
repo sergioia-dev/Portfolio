@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import dataSource from "../../src/shared/database/data-source";
-import providerSeeder from "./provider_seeder";
-import languageSeeder from "./language_seeder";
 import exceptionSeeder from "./exception_seeder";
+import languageSeeder from "./language_seeder";
+import providerSeeder from "./provider_seeder";
 
 dataSource
   .initialize()

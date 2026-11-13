@@ -4,8 +4,8 @@ import environment from "../security/configuration/environment";
 
 const dataSource = new DataSource({
   type: "postgres",
-  url: environment.DATABASE_URL!,
-  entities: [__dirname + "/**/*.entity.{ts,js}"],
+  url: environment.DATABASE_URL as string,
+  entities: [`${__dirname}/**/*.entity.{ts,js}`],
   synchronize: true,
 });
 

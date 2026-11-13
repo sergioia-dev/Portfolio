@@ -21,18 +21,13 @@ export default class Jwt {
   private refreshExpiresIn: SignOptions["expiresIn"];
 
   constructor() {
-    this.accessSecret = environment.JWT_ACCESS_SECRET!;
-    this.refreshSecret = environment.JWT_REFRESH_SECRET!;
+    this.accessSecret = environment.JWT_ACCESS_SECRET as string;
+    this.refreshSecret = environment.JWT_REFRESH_SECRET as string;
     this.accessExpiresIn = environment.JWT_ACCESS_EXPIRATION as SignOptions["expiresIn"];
     this.refreshExpiresIn = environment.JWT_REFRESH_EXPIRATION as SignOptions["expiresIn"];
   }
 
-  generateAccessToken(
-    sub: string,
-    email: string,
-    role: string,
-    permissions: string[],
-  ): string {
+  generateAccessToken(sub: string, email: string, role: string, permissions: string[]): string {
     return jwt.sign({ sub, email, role, permissions }, this.accessSecret, {
       expiresIn: this.accessExpiresIn,
     });
