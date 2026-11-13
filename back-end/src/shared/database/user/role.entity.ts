@@ -6,10 +6,10 @@ export default class Role {
   @PrimaryColumn("uuid")
   id!: string;
 
-  @Column({ type: "varchar", length: 100, unique: true })
+  @Column({ type: "varchar", length: 100, unique: true, nullable: false })
   name!: string;
 
-  @Column({ type: "varchar", length: 500 })
+  @Column({ type: "varchar", length: 500, nullable: false })
   description!: string;
 
   @ManyToMany(

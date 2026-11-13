@@ -17,3 +17,15 @@ This module defines the error messages returned when an error occurs.
 * MSG-4
     * User not found
     * Usuario no encontrado
+
+* INVALID_USERNAME
+    * Invalid username. It must be at most 39 characters of letters, numbers and single hyphens.
+    * Nombre de usuario no válido. Debe tener como máximo 39 caracteres de letras, números y guiones simples.
+
+* INVALID_EMAIL
+    * Invalid email. It must be a valid address of at most 320 characters.
+    * Correo electrónico no válido. Debe ser una dirección válida de como máximo 320 caracteres.
+
+* UNAUTHORIZED
+    * Unauthorized
+    * No autorizado

@@ -17,7 +17,7 @@ export default class User {
   @Column({ type: "varchar", length: 255, unique: true, nullable: true })
   email!: string | null;
 
-  @Column({ type: "text" })
+  @Column({ type: "text", nullable: false })
   password!: string;
 
   @ManyToOne(() => Role, { nullable: false })

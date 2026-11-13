@@ -9,6 +9,14 @@
 - **All error responses** return a body like `{ "code": "MSG-N", "message": "..." }`.
 - Passwords are hashed (e.g. Argon2/bcrypt) before persistence; plaintext is never stored or logged.
 
+## Language
+
+- `register`, `login`, `logout`, and `delete account` accept an optional `language` URL query parameter — `?language=en` or `?language=es`.
+- Error `message` strings are returned in the requested language; the `code` is language-independent.
+- Values are matched case-insensitively against `languages.name` (`EN`, `ES`). Unknown or missing `language` falls back to English (`EN`).
+- `refresh` does **not** accept `language`; its errors are always English.
+- `logout` accepts the parameter but has no error responses (always `200`), so it has no effect.
+
 ---
 
 ## 1. Sign Up
@@ -39,6 +47,8 @@
 | `MSG-1` | `409` | Username already in use |
 | `MSG-2` | `409` | Email already in use |
 | `MSG-3` | `400` | Password fails validation |
+| `INVALID_USERNAME` | `400` | Username fails format validation (regex / max 39 chars) |
+| `INVALID_EMAIL` | `400` | Email fails format validation (invalid or > 320 chars) |
 
 ---
 
@@ -102,9 +112,15 @@
 
 ### Behavior
 - Set `email = NULL`, `username = NULL`.
-- Set `deleted_at = now()`.
+- Set `deleted_at = true` (boolean soft-delete flag).
 - Clear the password hash
 
 ### Success
 - **`200 OK`** (or `204 No Content`).
+
+### Errors
+
+| Code | HTTP | Condition |
+|---|---:|---|
+| `UNAUTHORIZED` | `401` | Access token missing, invalid, or expired (must be authenticated) |
 

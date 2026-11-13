@@ -27,6 +27,24 @@ const EXCEPTIONS = [
     english: "User not found",
     spanish: "Usuario no encontrado",
   },
+  {
+    code: "INVALID_USERNAME",
+    english:
+      "Invalid username. It must be at most 39 characters of letters, numbers and single hyphens.",
+    spanish:
+      "Nombre de usuario no válido. Debe tener como máximo 39 caracteres de letras, números y guiones simples.",
+  },
+  {
+    code: "INVALID_EMAIL",
+    english: "Invalid email. It must be a valid address of at most 320 characters.",
+    spanish:
+      "Correo electrónico no válido. Debe ser una dirección válida de como máximo 320 caracteres.",
+  },
+  {
+    code: "UNAUTHORIZED",
+    english: "Unauthorized",
+    spanish: "No autorizado",
+  },
 ];
 
 const seedExceptions = async (dataSource: DataSource) => {
@@ -35,8 +53,8 @@ const seedExceptions = async (dataSource: DataSource) => {
   const languageRepository = dataSource.getRepository(Language);
 
   const languages = await languageRepository.find();
-  const english = languages.find((language) => language.name === "ENGLISH");
-  const spanish = languages.find((language) => language.name === "SPANISH");
+  const english = languages.find((language) => language.name === "EN");
+  const spanish = languages.find((language) => language.name === "ES");
   if (!english || !spanish) {
     throw new Error("The languages seeder must run before the exceptions seeder");
   }

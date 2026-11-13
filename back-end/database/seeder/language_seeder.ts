@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { DataSource } from "typeorm";
 import Language from "../../src/shared/database/language/language.entity";
 
-const LANGUAGES = ["SPANISH", "ENGLISH"];
+const LANGUAGES = ["ES", "EN"];
 
 const seedLanguages = async (dataSource: DataSource) => {
   const repository = dataSource.getRepository(Language);
