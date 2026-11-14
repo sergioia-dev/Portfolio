@@ -45,6 +45,81 @@ const EXCEPTIONS = [
     english: "Unauthorized",
     spanish: "No autorizado",
   },
+  {
+    code: "MSG-5",
+    english:
+      "You do not have permission to create portfolio experiences (missing feature PORTFOLIO_CREATE).",
+    spanish:
+      "No tienes permiso para crear experiencias de portafolio (falta la funcionalidad PORTFOLIO_CREATE).",
+  },
+  {
+    code: "MSG-6",
+    english: "The specified language does not exist.",
+    spanish: "El idioma especificado no existe.",
+  },
+  {
+    code: "MSG-7",
+    english:
+      "The same language is repeated in the experiences list. Each language may appear only once.",
+    spanish:
+      "El mismo idioma está repetido en la lista de experiencias. Cada idioma puede aparecer solo una vez.",
+  },
+  {
+    code: "MSG-8",
+    english: "At least one experience entry is required.",
+    spanish: "Se requiere al menos una entrada de experiencia.",
+  },
+  {
+    code: "MSG-9",
+    english: "The end date cannot be earlier than the start date.",
+    spanish: "La fecha de fin no puede ser anterior a la fecha de inicio.",
+  },
+  {
+    code: "INVALID_URL",
+    english: "Invalid URL. It must be a valid absolute URL.",
+    spanish: "URL no válida. Debe ser una URL absoluta válida.",
+  },
+  {
+    code: "INVALID_DATE_FORMAT",
+    english: "Invalid date. It must follow the format YYYY-MM-DD and be a real calendar date.",
+    spanish:
+      "Fecha no válida. Debe seguir el formato AAAA-MM-DD y ser una fecha real del calendario.",
+  },
+  {
+    code: "MISSING_FIELD",
+    english: "A required field is missing or empty.",
+    spanish: "Falta un campo obligatorio o está vacío.",
+  },
+  {
+    code: "INVALID_TITLE",
+    english: "Invalid title.",
+    spanish: "Título no válido.",
+  },
+  {
+    code: "INVALID_DESCRIPTION",
+    english: "Invalid description.",
+    spanish: "Descripción no válida.",
+  },
+  {
+    code: "MSG-10",
+    english: "Experience not found.",
+    spanish: "Experiencia no encontrada.",
+  },
+  {
+    code: "MSG-11",
+    english: "The experience was modified by another request. Reload and try again.",
+    spanish: "La experiencia fue modificada por otra solicitud. Recarga e inténtalo de nuevo.",
+  },
+  {
+    code: "INVALID_ID",
+    english: "Invalid identifier. It must be a well-formed experience id.",
+    spanish: "Identificador no válido. Debe ser un id de experiencia con formato correcto.",
+  },
+  {
+    code: "INVALID_QUERY_PARAM",
+    english: "Invalid query parameter.",
+    spanish: "Parámetro de consulta no válido.",
+  },
 ];
 
 const seedExceptions = async (dataSource: DataSource) => {

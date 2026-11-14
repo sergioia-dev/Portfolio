@@ -1,0 +1,38 @@
+import { Router } from "express";
+import type Jwt from "../../shared/security/jwt/jwt";
+import { requireAuth } from "../auth/auth.controller";
+import type MessageRepository from "../auth/message.repository";
+import type ExperienceController from "./experience.controller";
+import { requireFeature } from "./experience.controller";
+
+export const experienceRouter = (
+  controller: ExperienceController,
+  jwt: Jwt,
+  messageRepository: MessageRepository,
+): Router => {
+  const router = Router();
+  const authenticated = requireAuth(jwt, messageRepository);
+
+  router.post(
+    "/portfolio/experiences",
+    authenticated,
+    requireFeature("PORTFOLIO_CREATE", messageRepository),
+    controller.create,
+  );
+  router.put(
+    "/portfolio/experiences/:id",
+    authenticated,
+    requireFeature("PORTFOLIO_UPDATE", messageRepository),
+    controller.update,
+  );
+  router.delete(
+    "/portfolio/experiences/:id",
+    authenticated,
+    requireFeature("PORTFOLIO_DELETE", messageRepository),
+    controller.remove,
+  );
+  router.get("/users/:userId/portfolio/experiences", controller.list);
+  router.get("/users/:userId/portfolio/experiences/:id", controller.get);
+
+  return router;
+};

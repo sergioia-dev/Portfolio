@@ -209,6 +209,24 @@ test("requireAuth attaches the user id from a valid access cookie", () => {
   expect(response.json).not.toHaveBeenCalled();
 });
 
+test("requireAuth attaches the token permissions", () => {
+  const jwt = {
+    verifyAccessToken: jest.fn(() => ({ sub: "user-id", permissions: ["PORTFOLIO_CREATE"] })),
+  };
+  const request = {
+    query: {},
+    cookies: { accessToken: "access-token" },
+  } as unknown as AuthenticatedRequest;
+
+  requireAuth(jwt as unknown as Jwt, createMessageRepository() as unknown as MessageRepository)(
+    request,
+    createResponse() as unknown as Response,
+    jest.fn(),
+  );
+
+  expect(request.permissions).toEqual(["PORTFOLIO_CREATE"]);
+});
+
 test("requireAuth rejects a missing or invalid access cookie", async () => {
   const jwt = { verifyAccessToken: jest.fn(() => ({ sub: "user-id" })) };
   const middleware = requireAuth(

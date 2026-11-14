@@ -29,3 +29,59 @@ This module defines the error messages returned when an error occurs.
 * UNAUTHORIZED
     * Unauthorized
     * No autorizado
+
+* MSG-5
+    * You do not have permission to create portfolio experiences (missing feature PORTFOLIO_CREATE).
+    * No tienes permiso para crear experiencias de portafolio (falta la funcionalidad PORTFOLIO_CREATE).
+
+* MSG-6
+    * The specified language does not exist.
+    * El idioma especificado no existe.
+
+* MSG-7
+    * The same language is repeated in the experiences list. Each language may appear only once.
+    * El mismo idioma está repetido en la lista de experiencias. Cada idioma puede aparecer solo una vez.
+
+* MSG-8
+    * At least one experience entry is required.
+    * Se requiere al menos una entrada de experiencia.
+
+* MSG-9
+    * The end date cannot be earlier than the start date.
+    * La fecha de fin no puede ser anterior a la fecha de inicio.
+
+* INVALID_URL
+    * Invalid URL. It must be a valid absolute URL.
+    * URL no válida. Debe ser una URL absoluta válida.
+
+* INVALID_DATE_FORMAT
+    * Invalid date. It must follow the format YYYY-MM-DD and be a real calendar date.
+    * Fecha no válida. Debe seguir el formato AAAA-MM-DD y ser una fecha real del calendario.
+
+* MISSING_FIELD
+    * A required field is missing or empty.
+    * Falta un campo obligatorio o está vacío.
+
+* INVALID_TITLE
+    * Invalid title.
+    * Título no válido.
+
+* INVALID_DESCRIPTION
+    * Invalid description.
+    * Descripción no válida.
+
+* MSG-10
+    * Experience not found.
+    * Experiencia no encontrada.
+
+* MSG-11
+    * The experience was modified by another request. Reload and try again.
+    * La experiencia fue modificada por otra solicitud. Recarga e inténtalo de nuevo.
+
+* INVALID_ID
+    * Invalid identifier. It must be a well-formed experience id.
+    * Identificador no válido. Debe ser un id de experiencia con formato correcto.
+
+* INVALID_QUERY_PARAM
+    * Invalid query parameter.
+    * Parámetro de consulta no válido.

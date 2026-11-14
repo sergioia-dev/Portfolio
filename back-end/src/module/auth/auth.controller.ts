@@ -6,6 +6,7 @@ import type MessageRepository from "./message.repository";
 
 export interface AuthenticatedRequest extends Request {
   userId?: string;
+  permissions?: string[];
 }
 
 type SendError = (
@@ -52,7 +53,9 @@ export const requireAuth = (jwt: Jwt, messageRepository: MessageRepository): Req
       return;
     }
     try {
-      (request as AuthenticatedRequest).userId = jwt.verifyAccessToken(token).sub;
+      const payload = jwt.verifyAccessToken(token);
+      (request as AuthenticatedRequest).userId = payload.sub;
+      (request as AuthenticatedRequest).permissions = payload.permissions;
       next();
     } catch {
       await sendError(unauthorized(), language, response);
