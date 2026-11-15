@@ -1,13 +1,13 @@
 import { randomUUID } from "node:crypto";
-import type Experience from "../../shared/database/experience/experience.entity";
-import type Language from "../../shared/database/language/language.entity";
+import type Experience from "../../../../shared/database/experience/experience.entity";
+import type Language from "../../../../shared/database/language/language.entity";
 import {
   experienceNotFound,
   languageNotFound,
   preconditionFailed,
   userNotFound,
-} from "./experience.errors";
-import type ExperienceRepository from "./experience.repository";
+} from "../errors/experience.errors";
+import type ExperienceRepository from "../repository/experience.repository";
 import {
   type ExperienceInput,
   type TranslationInput,
@@ -15,7 +15,7 @@ import {
   validateExperienceId,
   validateLanguageQuery,
   validateListQuery,
-} from "./experience.validators";
+} from "../validators/experience.validators";
 
 export interface ExperienceResponse {
   id: string;

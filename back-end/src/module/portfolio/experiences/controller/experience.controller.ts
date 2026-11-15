@@ -1,8 +1,8 @@
 import type { Request, RequestHandler, Response } from "express";
-import type { AuthenticatedRequest } from "../auth/auth.controller";
-import type MessageRepository from "../auth/message.repository";
-import { ExperienceError, featureForbidden, unauthorized } from "./experience.errors";
-import type ExperienceService from "./experience.service";
+import type { AuthenticatedRequest } from "../../../auth/controller/auth.controller";
+import type MessageRepository from "../../../auth/repository/message.repository";
+import { ExperienceError, featureForbidden, unauthorized } from "../errors/experience.errors";
+import type ExperienceService from "../service/experience.service";
 
 type SendError = (
   error: unknown,

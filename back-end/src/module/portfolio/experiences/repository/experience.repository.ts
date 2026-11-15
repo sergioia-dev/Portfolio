@@ -1,10 +1,10 @@
 import type { DataSource, FindOptionsOrder } from "typeorm";
 import { In, IsNull, Not } from "typeorm";
-import Experience from "../../shared/database/experience/experience.entity";
-import ExperienceTranslation from "../../shared/database/experience/experience_translation.entity";
-import Language from "../../shared/database/language/language.entity";
-import User from "../../shared/database/user/user.entity";
-import type { SortOption } from "./experience.validators";
+import Experience from "../../../../shared/database/experience/experience.entity";
+import ExperienceTranslation from "../../../../shared/database/experience/experience_translation.entity";
+import Language from "../../../../shared/database/language/language.entity";
+import User from "../../../../shared/database/user/user.entity";
+import type { SortOption } from "../validators/experience.validators";
 
 export interface ExperienceFields {
   websiteUrl: string | null;

@@ -11,7 +11,7 @@ import {
   languageNotFound,
   missingField,
   translationsRequired,
-} from "./experience.errors";
+} from "../errors/experience.errors";
 
 export interface TranslationInput {
   language: string;
