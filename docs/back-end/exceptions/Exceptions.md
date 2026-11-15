@@ -85,3 +85,31 @@ This module defines the error messages returned when an error occurs.
 * INVALID_QUERY_PARAM
     * Invalid query parameter.
     * Parámetro de consulta no válido.
+
+* MSG-13                                                              
+    * A tag with this name already exists.                               
+    * Ya existe una etiqueta con este nombre.                           
+
+* INVALID_NAME                                                        
+    * Invalid name. It must be 1 to 50 characters and contain no control characters.  
+    * Nombre no válido. Debe tener entre 1 y 50 caracteres y no contener caracteres de control. 
+
+* INVALID_FIELD                                                     
+    * Invalid field value. Check the type and allowed values for the named field.
+    * Valor de campo no válido. Comprueba el tipo y los valores permitidos para el campo indicado.
+
+* INVALID_IMAGE                                                     
+    * Invalid image.  
+    * Imagen no válida. 
+
+* UNSUPPORTED_MEDIA_TYPE                                              
+    * Unsupported content type.
+    * Tipo de contenido no admitido. 
+
+* MSG-14
+    * Tag not found.
+    * Etiqueta no encontrada.
+
+* MSG-15
+    * Tag in use.
+    * Etiqueta en uso.

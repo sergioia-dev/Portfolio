@@ -120,6 +120,43 @@ const EXCEPTIONS = [
     english: "Invalid query parameter.",
     spanish: "Parámetro de consulta no válido.",
   },
+  {
+    code: "MSG-13",
+    english: "A tag with this name already exists.",
+    spanish: "Ya existe una etiqueta con este nombre.",
+  },
+  {
+    code: "INVALID_NAME",
+    english: "Invalid name. It must be 1 to 50 characters and contain no control characters.",
+    spanish:
+      "Nombre no válido. Debe tener entre 1 y 50 caracteres y no contener caracteres de control.",
+  },
+  {
+    code: "INVALID_FIELD",
+    english: "Invalid field value. Check the type and allowed values for the named field.",
+    spanish:
+      "Valor de campo no válido. Compruebe el tipo y los valores permitidos para el campo indicado.",
+  },
+  {
+    code: "INVALID_IMAGE",
+    english: "Invalid image.",
+    spanish: "Imagen no válida.",
+  },
+  {
+    code: "UNSUPPORTED_MEDIA_TYPE",
+    english: "Unsupported content type.",
+    spanish: "Tipo de contenido no admitido.",
+  },
+  {
+    code: "MSG-14",
+    english: "Tag not found.",
+    spanish: "Etiqueta no encontrada.",
+  },
+  {
+    code: "MSG-15",
+    english: "Tag in use.",
+    spanish: "Etiqueta en uso.",
+  },
 ];
 
 const seedExceptions = async (dataSource: DataSource) => {
