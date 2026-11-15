@@ -1,5 +1,5 @@
 import type { DataSource } from "typeorm";
-import MessageRepository from "../../../src/module/auth/message.repository";
+import MessageRepository from "../../../src/module/auth/repository/message.repository";
 import Exception from "../../../src/shared/database/exception/exception.entity";
 import ExceptionId from "../../../src/shared/database/exception/exception_id.entity";
 import Language from "../../../src/shared/database/language/language.entity";

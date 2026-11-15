@@ -1,5 +1,8 @@
-import type { AuthError } from "../../../src/module/auth/auth.errors";
-import { validateLogin, validateRegister } from "../../../src/module/auth/auth.validators";
+import type { AuthError } from "../../../src/module/auth/errors/auth.errors";
+import {
+  validateLogin,
+  validateRegister,
+} from "../../../src/module/auth/validators/auth.validators";
 
 const validRegister = {
   username: "john-doe",

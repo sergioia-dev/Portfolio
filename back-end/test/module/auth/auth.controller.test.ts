@@ -2,15 +2,15 @@ import type { Request, RequestHandler, Response } from "express";
 import AuthController, {
   type AuthenticatedRequest,
   requireAuth,
-} from "../../../src/module/auth/auth.controller";
+} from "../../../src/module/auth/controller/auth.controller";
 import {
   invalidCredentials,
   unauthorized,
   usernameTaken,
-} from "../../../src/module/auth/auth.errors";
-import { authRouter } from "../../../src/module/auth/auth.routes";
-import type AuthService from "../../../src/module/auth/auth.service";
-import type MessageRepository from "../../../src/module/auth/message.repository";
+} from "../../../src/module/auth/errors/auth.errors";
+import type MessageRepository from "../../../src/module/auth/repository/message.repository";
+import { authRouter } from "../../../src/module/auth/routes/auth.routes";
+import type AuthService from "../../../src/module/auth/service/auth.service";
 import type Jwt from "../../../src/shared/security/jwt/jwt";
 
 const createResponse = () => {

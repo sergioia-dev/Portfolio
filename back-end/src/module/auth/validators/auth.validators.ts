@@ -4,7 +4,7 @@ import {
   invalidEmail,
   invalidPassword,
   invalidUsername,
-} from "./auth.errors";
+} from "../errors/auth.errors";
 
 export interface RegisterInput {
   username: string;

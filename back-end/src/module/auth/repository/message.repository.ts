@@ -1,7 +1,7 @@
 import type { DataSource } from "typeorm";
-import Exception from "../../shared/database/exception/exception.entity";
-import ExceptionId from "../../shared/database/exception/exception_id.entity";
-import Language from "../../shared/database/language/language.entity";
+import Exception from "../../../shared/database/exception/exception.entity";
+import ExceptionId from "../../../shared/database/exception/exception_id.entity";
+import Language from "../../../shared/database/language/language.entity";
 
 const DEFAULT_LANGUAGE = "EN";
 

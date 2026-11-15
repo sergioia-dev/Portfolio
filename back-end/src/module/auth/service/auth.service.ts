@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
 import bcrypt from "bcrypt";
-import type User from "../../shared/database/user/user.entity";
-import type Jwt from "../../shared/security/jwt/jwt";
-import { emailTaken, invalidCredentials, unauthorized, usernameTaken } from "./auth.errors";
-import type AuthRepository from "./auth.repository";
-import { validateLogin, validateRegister } from "./auth.validators";
+import type User from "../../../shared/database/user/user.entity";
+import type Jwt from "../../../shared/security/jwt/jwt";
+import { emailTaken, invalidCredentials, unauthorized, usernameTaken } from "../errors/auth.errors";
+import type AuthRepository from "../repository/auth.repository";
+import { validateLogin, validateRegister } from "../validators/auth.validators";
 
 export interface PasswordHasher {
   hash(password: string): Promise<string>;

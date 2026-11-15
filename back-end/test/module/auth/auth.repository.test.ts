@@ -1,5 +1,5 @@
 import type { DataSource } from "typeorm";
-import AuthRepository, { type NewUser } from "../../../src/module/auth/auth.repository";
+import AuthRepository, { type NewUser } from "../../../src/module/auth/repository/auth.repository";
 import Provider from "../../../src/shared/database/user/provider.entity";
 import Role from "../../../src/shared/database/user/role.entity";
 import User from "../../../src/shared/database/user/user.entity";

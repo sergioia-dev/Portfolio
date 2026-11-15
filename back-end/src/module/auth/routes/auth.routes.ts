@@ -1,8 +1,8 @@
 import { Router } from "express";
-import type Jwt from "../../shared/security/jwt/jwt";
-import type AuthController from "./auth.controller";
-import { requireAuth } from "./auth.controller";
-import type MessageRepository from "./message.repository";
+import type Jwt from "../../../shared/security/jwt/jwt";
+import type AuthController from "../controller/auth.controller";
+import { requireAuth } from "../controller/auth.controller";
+import type MessageRepository from "../repository/message.repository";
 
 export const authRouter = (
   controller: AuthController,

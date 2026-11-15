@@ -1,8 +1,8 @@
 import type { CookieOptions, Request, RequestHandler, Response } from "express";
-import type Jwt from "../../shared/security/jwt/jwt";
-import { AuthError, unauthorized } from "./auth.errors";
-import type AuthService from "./auth.service";
-import type MessageRepository from "./message.repository";
+import type Jwt from "../../../shared/security/jwt/jwt";
+import { AuthError, unauthorized } from "../errors/auth.errors";
+import type MessageRepository from "../repository/message.repository";
+import type AuthService from "../service/auth.service";
 
 export interface AuthenticatedRequest extends Request {
   userId?: string;

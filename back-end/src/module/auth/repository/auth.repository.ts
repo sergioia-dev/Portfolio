@@ -1,7 +1,7 @@
 import type { DataSource } from "typeorm";
-import Provider from "../../shared/database/user/provider.entity";
-import Role from "../../shared/database/user/role.entity";
-import User from "../../shared/database/user/user.entity";
+import Provider from "../../../shared/database/user/provider.entity";
+import Role from "../../../shared/database/user/role.entity";
+import User from "../../../shared/database/user/user.entity";
 
 export interface NewUser {
   id: string;
