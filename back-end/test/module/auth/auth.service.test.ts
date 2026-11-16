@@ -1,8 +1,8 @@
-import type AuthRepository from "../../../src/module/auth/auth.repository";
+import type AuthRepository from "../../../src/module/auth/repository/auth.repository";
 import AuthService, {
   BcryptPasswordHasher,
   type PasswordHasher,
-} from "../../../src/module/auth/auth.service";
+} from "../../../src/module/auth/service/auth.service";
 import type User from "../../../src/shared/database/user/user.entity";
 import type Jwt from "../../../src/shared/security/jwt/jwt";
 

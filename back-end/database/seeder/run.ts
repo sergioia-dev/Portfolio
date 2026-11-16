@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import dataSource from "../../src/shared/database/data-source";
 import exceptionSeeder from "./exception_seeder";
+import functionalitySeeder from "./functionality_seeder";
 import languageSeeder from "./language_seeder";
 import providerSeeder from "./provider_seeder";
 import roleSeeder from "./role_seeder";
@@ -9,6 +10,7 @@ dataSource
   .initialize()
   .then(async () => {
     await providerSeeder(dataSource);
+    await functionalitySeeder(dataSource);
     await roleSeeder(dataSource);
     await languageSeeder(dataSource);
     await exceptionSeeder(dataSource);
