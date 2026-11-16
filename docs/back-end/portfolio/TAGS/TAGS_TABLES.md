@@ -3,9 +3,9 @@
 ```sql
 CREATE TABLE IF NOT EXISTS "tags" (
 	"id" UUID NOT NULL,
-	"name" VARCHAR(50) NOT NULL UNIQUE,
+	"name" VARCHAR(50) NOT NULL ,
 	"filterable" BOOLEAN NOT NULL,
-	"img_path" VARCHAR(500),
+	"image_url" VARCHAR(2048),
 	PRIMARY KEY("id")
 );
 ```

@@ -7,6 +7,10 @@ import AuthRepository from "./module/auth/repository/auth.repository";
 import MessageRepository from "./module/auth/repository/message.repository";
 import { authRouter } from "./module/auth/routes/auth.routes";
 import AuthService, { BcryptPasswordHasher } from "./module/auth/service/auth.service";
+import CertificationController from "./module/portfolio/certifications/controller/certification.controller";
+import CertificationRepository from "./module/portfolio/certifications/repository/certification.repository";
+import { certificationRouter } from "./module/portfolio/certifications/routes/certification.routes";
+import CertificationService from "./module/portfolio/certifications/service/certification.service";
 import ExperienceController from "./module/portfolio/experiences/controller/experience.controller";
 import ExperienceRepository from "./module/portfolio/experiences/repository/experience.repository";
 import { experienceRouter } from "./module/portfolio/experiences/routes/experience.routes";
@@ -34,11 +38,15 @@ const tagController = new TagController(
   new TagService(new TagRepository(dataSource)),
   messageRepository,
 );
+const certificationController = new CertificationController(
+  new CertificationService(new CertificationRepository(dataSource)),
+  messageRepository,
+);
 
 app.use(
   cors({
     origin: ["https://portfoliofrontend-dkvq0mq5j-k1s-projects-ff94b943.vercel.app"],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   }),
@@ -52,5 +60,6 @@ app.use(requestLimiter);
 app.use("/auth", authRouter(authController, jwt, messageRepository));
 app.use(experienceRouter(experienceController, jwt, messageRepository));
 app.use(tagRouter(tagController, jwt, messageRepository));
+app.use(certificationRouter(certificationController, jwt, messageRepository));
 
 export default app;

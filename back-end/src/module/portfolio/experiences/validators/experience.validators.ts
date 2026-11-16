@@ -77,7 +77,7 @@ const isAbsoluteUrl = (value: string): boolean => {
 };
 
 const readEntries = (body: unknown): Record<string, unknown>[] | ExperienceError => {
-  const translations = readRecord(body)?.["translations"];
+  const translations = readRecord(body)?.translations;
   if (!Array.isArray(translations) || translations.length === 0) return translationsRequired();
   return translations.map((entry) => readRecord(entry) ?? {});
 };
@@ -181,9 +181,9 @@ export const validateListQuery = (
   if ("error" in language) return language;
 
   const record = readRecord(query);
-  const rawLimit = record?.["limit"];
-  const rawPage = record?.["page"];
-  const rawSort = record?.["sort"];
+  const rawLimit = record?.limit;
+  const rawPage = record?.page;
+  const rawSort = record?.sort;
 
   const limit = rawLimit === undefined ? DEFAULT_LIMIT : readInteger(rawLimit, 1, MAX_LIMIT);
   const page =

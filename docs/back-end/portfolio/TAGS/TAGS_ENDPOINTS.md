@@ -52,7 +52,7 @@ Evaluated in this order; the first failure is returned.
 | `MISSING_FIELD` | `400` | `name` absent, or present as an empty/whitespace‑only value |
 | `INVALID_NAME` | `400` | `name` exceeds 50 characters after trim, or contains control characters |
 | `INVALID_FIELD` | `400` | `filterable` present but not the literal `true` / `false` |
-| `INVALID_IMAGE` | `400` | `image` part is not a valid SVG (magic bytes), exceeds 256 KB, or fails sanitization |
+| `INVALID_FORMAT` | `400` | `image` not svg |
 | `MSG-13` | `409` | A tag named `name` already exists **for this user** (case‑insensitive) — also returned when the DB unique index rejects the insert |
 
 
@@ -135,7 +135,7 @@ Evaluated in this order; the first failure is returned.
 | `MISSING_FIELD` | `400` | `name` or `filterable` absent, or `name` present as empty/whitespace‑only |
 | `INVALID_NAME` | `400` | `name` exceeds 50 characters after trim, or contains control characters |
 | `INVALID_FIELD` | `400` | `filterable` present but not the literal `true`/`false`; `remove_image` present but not `true`/`false`; or `image` and `remove_image=true` supplied together |
-| `INVALID_IMAGE` | `400` | `image` part is not a valid SVG (magic bytes), exceeds 256 KB, or fails sanitization |
+| `INVALID_FORMAT` | `400` | `image` part is not a valid SVG |
 | `MSG-13` | `409` | Renaming would collide with another tag owned by the same user (case‑insensitive) — also returned when the DB unique index rejects the update |
 
 

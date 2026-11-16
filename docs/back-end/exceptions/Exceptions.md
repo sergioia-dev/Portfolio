@@ -31,8 +31,8 @@ This module defines the error messages returned when an error occurs.
     * No autorizado
 
 * MSG-5
-    * You do not have permission to create portfolio experiences (missing feature PORTFOLIO_CREATE).
-    * No tienes permiso para crear experiencias de portafolio (falta la funcionalidad PORTFOLIO_CREATE).
+    * You do not have permission to perform this action.
+    * No tienes permiso para realizar esta acción.
 
 * MSG-6
     * The specified language does not exist.
@@ -71,8 +71,8 @@ This module defines the error messages returned when an error occurs.
     * Descripción no válida.
 
 * MSG-10
-    * Experience not found.
-    * Experiencia no encontrada.
+    * The requested resource was not found.
+    * El recurso solicitado no fue encontrado.
 
 * MSG-11
     * The experience was modified by another request. Reload and try again.
@@ -82,13 +82,21 @@ This module defines the error messages returned when an error occurs.
     * Invalid identifier. It must be a well-formed experience id.
     * Identificador no válido. Debe ser un id de experiencia con formato correcto.
 
+* INVALID_USER_ID
+    * Invalid user identifier. It must be a well-formed user id.
+    * Identificador de usuario no válido. Debe ser un id de usuario con formato correcto.
+
+* INVALID_CERTIFICATION_ID
+    * Invalid certification identifier. It must be a well-formed certification id.
+    * Identificador de certificación no válido. Debe ser un id de certificación con formato correcto.
+
 * INVALID_QUERY_PARAM
     * Invalid query parameter.
     * Parámetro de consulta no válido.
 
 * MSG-13                                                              
-    * A tag with this name already exists.                               
-    * Ya existe una etiqueta con este nombre.                           
+    * The object already exists.                               
+    * El objeto ya existe.                           
 
 * INVALID_NAME                                                        
     * Invalid name. It must be 1 to 50 characters and contain no control characters.  
@@ -98,9 +106,9 @@ This module defines the error messages returned when an error occurs.
     * Invalid field value. Check the type and allowed values for the named field.
     * Valor de campo no válido. Comprueba el tipo y los valores permitidos para el campo indicado.
 
-* INVALID_IMAGE                                                     
-    * Invalid image.  
-    * Imagen no válida. 
+* INVALID_FORMAT                                                     
+    * Invalid format.  
+    * Formato no válido. 
 
 * UNSUPPORTED_MEDIA_TYPE                                              
     * Unsupported content type.

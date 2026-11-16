@@ -328,7 +328,7 @@ test("parseMultipart rejects an oversized image with 415", async () => {
   await new Promise((resolve) => setTimeout(resolve, 20));
 
   expect(response.status).toHaveBeenCalledWith(400);
-  expect(response.json).toHaveBeenCalledWith(expect.objectContaining({ code: "INVALID_IMAGE" }));
+  expect(response.json).toHaveBeenCalledWith(expect.objectContaining({ code: "INVALID_FORMAT" }));
   expect(next).not.toHaveBeenCalled();
 });
 

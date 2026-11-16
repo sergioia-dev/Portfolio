@@ -40,7 +40,7 @@ const invalidName = () =>
 const invalidField = (field: string) =>
   new TagError("INVALID_FIELD", 400, `Invalid value for field: ${field}.`);
 
-const invalidImage = () => new TagError("INVALID_IMAGE", 400, "Invalid image.");
+const invalidImage = () => new TagError("INVALID_FORMAT", 400, "Invalid image.");
 
 const unsupportedMediaType = () =>
   new TagError("UNSUPPORTED_MEDIA_TYPE", 415, "Unsupported content type.");

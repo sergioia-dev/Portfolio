@@ -118,7 +118,7 @@ test("create validates fields before writing", async () => {
   });
   await expect(
     service.create(USER_ID, { name: "React" }, { buffer: Buffer.from("<html></html>") }),
-  ).rejects.toMatchObject({ code: "INVALID_IMAGE" });
+  ).rejects.toMatchObject({ code: "INVALID_FORMAT" });
   expect(repository.create).not.toHaveBeenCalled();
 });
 

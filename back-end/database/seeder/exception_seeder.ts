@@ -47,10 +47,8 @@ const EXCEPTIONS = [
   },
   {
     code: "MSG-5",
-    english:
-      "You do not have permission to create portfolio experiences (missing feature PORTFOLIO_CREATE).",
-    spanish:
-      "No tienes permiso para crear experiencias de portafolio (falta la funcionalidad PORTFOLIO_CREATE).",
+    english: "You do not have permission to perform this action.",
+    spanish: "No tienes permiso para realizar esta acción.",
   },
   {
     code: "MSG-6",
@@ -102,8 +100,8 @@ const EXCEPTIONS = [
   },
   {
     code: "MSG-10",
-    english: "Experience not found.",
-    spanish: "Experiencia no encontrada.",
+    english: "The requested resource was not found.",
+    spanish: "El recurso solicitado no fue encontrado.",
   },
   {
     code: "MSG-11",
@@ -121,9 +119,20 @@ const EXCEPTIONS = [
     spanish: "Parámetro de consulta no válido.",
   },
   {
+    code: "INVALID_USER_ID",
+    english: "Invalid user identifier. It must be a well-formed user id.",
+    spanish: "Identificador de usuario no válido. Debe ser un id de usuario con formato correcto.",
+  },
+  {
+    code: "INVALID_CERTIFICATION_ID",
+    english: "Invalid certification identifier. It must be a well-formed certification id.",
+    spanish:
+      "Identificador de certificación no válido. Debe ser un id de certificación con formato correcto.",
+  },
+  {
     code: "MSG-13",
-    english: "A tag with this name already exists.",
-    spanish: "Ya existe una etiqueta con este nombre.",
+    english: "The object already exists.",
+    spanish: "El objeto ya existe.",
   },
   {
     code: "INVALID_NAME",
@@ -138,9 +147,9 @@ const EXCEPTIONS = [
       "Valor de campo no válido. Compruebe el tipo y los valores permitidos para el campo indicado.",
   },
   {
-    code: "INVALID_IMAGE",
-    english: "Invalid image.",
-    spanish: "Imagen no válida.",
+    code: "INVALID_FORMAT",
+    english: "Invalid format.",
+    spanish: "Formato no válido.",
   },
   {
     code: "UNSUPPORTED_MEDIA_TYPE",

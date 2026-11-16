@@ -99,11 +99,11 @@ test("images must be non-empty SVGs within size", () => {
   const svg = Buffer.from("<svg></svg>");
   expect(validateImage(undefined)).toEqual({ value: null });
   expect(validateImage(svg)).toEqual({ value: svg });
-  expect(readError(validateImage(Buffer.alloc(0)))).toMatchObject({ code: "INVALID_IMAGE" });
+  expect(readError(validateImage(Buffer.alloc(0)))).toMatchObject({ code: "INVALID_FORMAT" });
   expect(readError(validateImage(Buffer.from("<html></html>")))).toMatchObject({
-    code: "INVALID_IMAGE",
+    code: "INVALID_FORMAT",
   });
   expect(readError(validateImage(Buffer.alloc(256 * 1024 + 1, 1)))).toMatchObject({
-    code: "INVALID_IMAGE",
+    code: "INVALID_FORMAT",
   });
 });
