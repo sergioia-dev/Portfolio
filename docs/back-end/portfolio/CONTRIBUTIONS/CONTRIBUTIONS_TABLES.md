@@ -3,6 +3,7 @@
 ```sql
 CREATE TABLE IF NOT EXISTS "contributions_id" (
     "id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
     "project_url" VARCHAR(2048),
     "pull_request_url" VARCHAR(2048),
     PRIMARY KEY("id")

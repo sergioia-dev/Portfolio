@@ -53,6 +53,7 @@ In this section the user would add the project he had made.
 
 [Endpoints](./PROJECTS/PROJECTS_ENDPOINTS.md)
 [Tables](./PROJECTS/PROJECTS_TABLES.md)
+
 ### Functionalities
 
 * List all the projects.
@@ -65,6 +66,9 @@ In this section the user would add the project he had made.
 
 In this section we would list the contributions of the user
 
+[Endpoints](./CONTRIBUTIONS/CONTRIBUTIONS_ENDPOINTS.md)
+[Tables](./CONTRIBUTIONS/CONTRIBUTIONS_TABLES.md)
+
 ### Functionalities
 
 * List all the contributions
@@ -72,15 +76,4 @@ In this section we would list the contributions of the user
 * Create a new contribution.
 * Update a contribution.
 * Delete a contribution.
-
-## Contact section
-
-In this section would be added the contact method to the user.
-
-> [!IMPORTANT]
-> In planning
-
-
-
-
 

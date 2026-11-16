@@ -11,6 +11,10 @@ import CertificationController from "./module/portfolio/certifications/controlle
 import CertificationRepository from "./module/portfolio/certifications/repository/certification.repository";
 import { certificationRouter } from "./module/portfolio/certifications/routes/certification.routes";
 import CertificationService from "./module/portfolio/certifications/service/certification.service";
+import ContributionController from "./module/portfolio/contributions/controller/contribution.controller";
+import ContributionRepository from "./module/portfolio/contributions/repository/contribution.repository";
+import { contributionRouter } from "./module/portfolio/contributions/routes/contribution.routes";
+import ContributionService from "./module/portfolio/contributions/service/contribution.service";
 import ExperienceController from "./module/portfolio/experiences/controller/experience.controller";
 import ExperienceRepository from "./module/portfolio/experiences/repository/experience.repository";
 import { experienceRouter } from "./module/portfolio/experiences/routes/experience.routes";
@@ -50,6 +54,10 @@ const projectController = new ProjectController(
   new ProjectService(new ProjectRepository(dataSource)),
   messageRepository,
 );
+const contributionController = new ContributionController(
+  new ContributionService(new ContributionRepository(dataSource)),
+  messageRepository,
+);
 
 app.use(
   cors({
@@ -70,5 +78,6 @@ app.use(experienceRouter(experienceController, jwt, messageRepository));
 app.use(tagRouter(tagController, jwt, messageRepository));
 app.use(certificationRouter(certificationController, jwt, messageRepository));
 app.use(projectRouter(projectController, jwt, messageRepository));
+app.use(contributionRouter(contributionController, jwt, messageRepository));
 
 export default app;
