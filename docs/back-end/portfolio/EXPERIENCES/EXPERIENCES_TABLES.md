@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS "experiences_id" (
 	"start_date" DATE NOT NULL,
 	"end_date" DATE,
 	"user_id" UUID NOT NULL,
-	"deleted_at" TIMESTAMP,
 	PRIMARY KEY("id")
 );
 ```

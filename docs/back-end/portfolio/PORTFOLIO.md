@@ -2,17 +2,20 @@
 
 The portfolio module will be constitude for the capabilities that the user with the required Functionalities will have in this section we will require:
 
-## Skills section
+## Tags section
 
 In this section  would be added all the tags with their respective img in case it requires one.
 
+[Endpoints](./TAGS/TAGS_ENDPOINTS.md)
+[Tables](./TAGS/TAGS_TABLES.md)
+
 ### Functionalities
 
-* List all the skills with their respective name and svg image.
-* List just one skill by id
-* Create a new skill 
-* Update a skill.
-* Delete a skill.
+* List all the tags with their respective name and svg image.
+* List just one tags by id
+* Create a new tag.
+* Update a tag.
+* Delete a tag.
 
 ## Experience section 
 
@@ -33,6 +36,9 @@ In this section would be added the Experience of the user
 
 In this section the user would add his certifications.
 
+[Endpoints](./CERTIFICATIONS/CERTIFICATIONS_ENDPOINTS.md)
+[Tables](./CERTIFICATIONS/CERTIFICATIONS_TABLES.md)
+
 ### Functionalities
 
 * List all the certifications.
@@ -45,6 +51,8 @@ In this section the user would add his certifications.
 
 In this section the user would add the project he had made.
 
+[Endpoints](./PROJECTS/PROJECTS_ENDPOINTS.md)
+[Tables](./PROJECTS/PROJECTS_TABLES.md)
 ### Functionalities
 
 * List all the projects.

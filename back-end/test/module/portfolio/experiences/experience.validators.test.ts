@@ -175,10 +175,10 @@ test("validateListQuery applies the documented defaults", () => {
 test("validateListQuery accepts explicit pagination and sort", () => {
   expect(
     validateListQuery(
-      { language: "en", limit: "100", page: "3", sort: "created_at_desc" },
+      { language: "en", limit: "100", page: "3", sort: "start_date_asc" },
       LANGUAGES,
     ),
-  ).toEqual({ value: { language: "EN", limit: 100, page: 3, sort: "created_at_desc" } });
+  ).toEqual({ value: { language: "EN", limit: 100, page: 3, sort: "start_date_asc" } });
 });
 
 test("validateListQuery rejects invalid query parameters", () => {

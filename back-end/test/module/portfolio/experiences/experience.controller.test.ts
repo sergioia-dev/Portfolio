@@ -86,32 +86,16 @@ test("update responds 200 with the id", async () => {
   expect(response.json).toHaveBeenCalledWith({ id: "experience-id" });
 });
 
-test("remove responds 204 and forwards the If-Match header", async () => {
+test("remove responds 204", async () => {
   const { controller, service } = buildController();
   const response = createResponse();
   service.remove.mockResolvedValue(undefined);
 
-  await call(
-    controller.remove,
-    { userId: "user-id", params: { id: "experience-id" }, headers: { "if-match": "2024-01-01" } },
-    response,
-  );
+  await call(controller.remove, { userId: "user-id", params: { id: "experience-id" } }, response);
 
-  expect(service.remove).toHaveBeenCalledWith("user-id", "experience-id", "2024-01-01");
+  expect(service.remove).toHaveBeenCalledWith("user-id", "experience-id");
   expect(response.status).toHaveBeenCalledWith(204);
   expect(response.send).toHaveBeenCalledWith();
-});
-
-test("remove treats an absent or repeated If-Match as no precondition", async () => {
-  for (const headers of [{}, { "if-match": ["a", "b"] }, { "if-match": "" }]) {
-    const { controller, service } = buildController();
-    const response = createResponse();
-    service.remove.mockResolvedValue(undefined);
-
-    await call(controller.remove, { userId: "user-id", params: { id: "x" }, headers }, response);
-
-    expect(service.remove).toHaveBeenCalledWith("user-id", "x", null);
-  }
 });
 
 test("list responds 200 with a public cache header", async () => {

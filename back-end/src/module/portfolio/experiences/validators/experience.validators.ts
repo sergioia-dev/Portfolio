@@ -26,7 +26,7 @@ export interface ExperienceInput {
   translations: TranslationInput[];
 }
 
-export type SortOption = "start_date_desc" | "start_date_asc" | "created_at_desc";
+export type SortOption = "start_date_desc" | "start_date_asc";
 
 export interface ListQuery {
   language: string;
@@ -44,7 +44,7 @@ const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 const DEFAULT_PAGE = 1;
 const DEFAULT_SORT: SortOption = "start_date_desc";
-const SORT_OPTIONS: SortOption[] = ["start_date_desc", "start_date_asc", "created_at_desc"];
+const SORT_OPTIONS: SortOption[] = ["start_date_desc", "start_date_asc"];
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

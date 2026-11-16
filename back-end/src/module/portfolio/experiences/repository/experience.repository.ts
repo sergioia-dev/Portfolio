@@ -1,5 +1,5 @@
 import type { DataSource, FindOptionsOrder } from "typeorm";
-import { In, IsNull, Not } from "typeorm";
+import { In, Not } from "typeorm";
 import Experience from "../../../../shared/database/experience/experience.entity";
 import ExperienceTranslation from "../../../../shared/database/experience/experience_translation.entity";
 import Language from "../../../../shared/database/language/language.entity";
@@ -34,7 +34,6 @@ export interface PageRequest {
 const ORDER_BY_SORT: Record<SortOption, FindOptionsOrder<Experience>> = {
   start_date_desc: { startDate: "DESC", id: "DESC" },
   start_date_asc: { startDate: "ASC", id: "ASC" },
-  created_at_desc: { createdAt: "DESC", id: "DESC" },
 };
 
 export default class ExperienceRepository {
@@ -77,7 +76,7 @@ export default class ExperienceRepository {
   async saveTranslations(id: string, translations: TranslationFields[]): Promise<void> {
     const repository = this.dataSource.getRepository(ExperienceTranslation);
     await repository.save(
-      translations.map((translation) => repository.create({ id, ...translation, deletedAt: null })),
+      translations.map((translation) => repository.create({ id, ...translation })),
     );
     await repository.delete({
       id,
@@ -85,18 +84,16 @@ export default class ExperienceRepository {
     });
   }
 
-  async softDelete(id: string, deletedAt: Date): Promise<void> {
-    await this.dataSource.getRepository(Experience).update({ id }, { deletedAt });
-    await this.dataSource.getRepository(ExperienceTranslation).update({ id }, { deletedAt });
+  async hardDelete(id: string): Promise<void> {
+    await this.dataSource.getRepository(Experience).delete({ id });
   }
 
   findReadOne(userId: string, id: string, languageId: string): Promise<Experience | null> {
     return this.dataSource.getRepository(Experience).findOne({
       where: {
         id,
-        deletedAt: IsNull(),
         user: { id: userId },
-        translations: { languageId, deletedAt: IsNull() },
+        translations: { languageId },
       },
       relations: { translations: true },
     });
@@ -108,9 +105,8 @@ export default class ExperienceRepository {
   ): Promise<{ items: Experience[]; total: number }> {
     const [items, total] = await this.dataSource.getRepository(Experience).findAndCount({
       where: {
-        deletedAt: IsNull(),
         user: { id: userId },
-        translations: { languageId: request.languageId, deletedAt: IsNull() },
+        translations: { languageId: request.languageId },
       },
       relations: { translations: true },
       order: ORDER_BY_SORT[request.sort],

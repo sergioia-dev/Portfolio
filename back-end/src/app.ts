@@ -15,6 +15,10 @@ import ExperienceController from "./module/portfolio/experiences/controller/expe
 import ExperienceRepository from "./module/portfolio/experiences/repository/experience.repository";
 import { experienceRouter } from "./module/portfolio/experiences/routes/experience.routes";
 import ExperienceService from "./module/portfolio/experiences/service/experience.service";
+import ProjectController from "./module/portfolio/projects/controller/project.controller";
+import ProjectRepository from "./module/portfolio/projects/repository/project.repository";
+import { projectRouter } from "./module/portfolio/projects/routes/project.routes";
+import ProjectService from "./module/portfolio/projects/service/project.service";
 import TagController from "./module/portfolio/tags/controller/tag.controller";
 import TagRepository from "./module/portfolio/tags/repository/tag.repository";
 import { tagRouter } from "./module/portfolio/tags/routes/tag.routes";
@@ -42,6 +46,10 @@ const certificationController = new CertificationController(
   new CertificationService(new CertificationRepository(dataSource)),
   messageRepository,
 );
+const projectController = new ProjectController(
+  new ProjectService(new ProjectRepository(dataSource)),
+  messageRepository,
+);
 
 app.use(
   cors({
@@ -61,5 +69,6 @@ app.use("/auth", authRouter(authController, jwt, messageRepository));
 app.use(experienceRouter(experienceController, jwt, messageRepository));
 app.use(tagRouter(tagController, jwt, messageRepository));
 app.use(certificationRouter(certificationController, jwt, messageRepository));
+app.use(projectRouter(projectController, jwt, messageRepository));
 
 export default app;

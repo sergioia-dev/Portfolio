@@ -1,12 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type Experience from "../../../../shared/database/experience/experience.entity";
 import type Language from "../../../../shared/database/language/language.entity";
-import {
-  experienceNotFound,
-  languageNotFound,
-  preconditionFailed,
-  userNotFound,
-} from "../errors/experience.errors";
+import { experienceNotFound, languageNotFound, userNotFound } from "../errors/experience.errors";
 import type ExperienceRepository from "../repository/experience.repository";
 import {
   type ExperienceInput,
@@ -27,8 +22,6 @@ export interface ExperienceResponse {
     title: string;
     description: string;
   };
-  created_at: string;
-  updated_at: string;
 }
 
 export interface ExperiencePage {
@@ -60,9 +53,7 @@ const toTranslations = (
   }));
 
 const toResponse = (experience: Experience, language: Language): ExperienceResponse => {
-  const translation = experience.translations.find(
-    (entry) => entry.languageId === language.id && entry.deletedAt === null,
-  );
+  const translation = experience.translations.find((entry) => entry.languageId === language.id);
   return {
     id: experience.id,
     website_url: experience.websiteUrl,
@@ -73,8 +64,6 @@ const toResponse = (experience: Experience, language: Language): ExperienceRespo
       title: translation?.title ?? "",
       description: translation?.description ?? "",
     },
-    created_at: experience.createdAt.toISOString(),
-    updated_at: experience.updatedAt.toISOString(),
   };
 };
 
@@ -110,7 +99,7 @@ export default class ExperienceService {
   async update(userId: string, id: string, body: unknown): Promise<{ id: string }> {
     validateExperienceId(id);
     const existing = await this.repository.findById(id);
-    if (!existing || existing.deletedAt || existing.userId !== userId) throw experienceNotFound();
+    if (!existing || existing.userId !== userId) throw experienceNotFound();
 
     const languages = await this.repository.findLanguages();
     const input = toTranslationsOrThrow(body, languages);
@@ -125,14 +114,11 @@ export default class ExperienceService {
     return { id };
   }
 
-  async remove(userId: string, id: string, ifMatch: string | null): Promise<void> {
+  async remove(userId: string, id: string): Promise<void> {
     validateExperienceId(id);
     const existing = await this.repository.findById(id);
     if (!existing || existing.userId !== userId) throw experienceNotFound();
-    if (ifMatch !== null && ifMatch !== existing.updatedAt.toISOString()) {
-      throw preconditionFailed();
-    }
-    if (!existing.deletedAt) await this.repository.softDelete(id, new Date());
+    await this.repository.hardDelete(id);
   }
 
   async list(userId: string, query: unknown): Promise<ExperiencePage> {
@@ -175,7 +161,7 @@ export default class ExperienceService {
     if (!user || user.deletedAt) throw userNotFound();
 
     const existing = await this.repository.findById(id);
-    if (!existing || existing.deletedAt || existing.userId !== userId) throw experienceNotFound();
+    if (!existing || existing.userId !== userId) throw experienceNotFound();
 
     const languages = await this.repository.findLanguages();
     const validation = validateLanguageQuery(

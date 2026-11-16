@@ -18,12 +18,12 @@ const createRepositories = () => {
     create: jest.fn((input: unknown) => input),
     save: jest.fn(async (input: unknown) => input),
     update: jest.fn(async () => ({ affected: 1 })),
+    delete: jest.fn(async () => ({ affected: 1 })),
   };
   const translation = {
     create: jest.fn((input: unknown) => input),
     save: jest.fn(async (input: unknown) => input),
     delete: jest.fn(async () => ({ affected: 1 })),
-    update: jest.fn(async () => ({ affected: 1 })),
   };
   const language = { find: jest.fn() };
   const user = { findOne: jest.fn() };
@@ -101,7 +101,6 @@ test("create saves the experience and then its translations", async () => {
       languageId: LANGUAGE_ID,
       title: "Developer",
       description: "Built things",
-      deletedAt: null,
     },
   ]);
   expect(translation.delete).toHaveBeenCalledWith({
@@ -139,14 +138,12 @@ test("saveTranslations drops the languages that were removed", async () => {
       languageId: "language-en",
       title: "Developer",
       description: "Built things",
-      deletedAt: null,
     },
     {
       id: EXPERIENCE_ID,
       languageId: "language-es",
       title: "Desarrollador",
       description: "Construyó cosas",
-      deletedAt: null,
     },
   ]);
   expect(translation.delete).toHaveBeenCalledWith({
@@ -155,17 +152,15 @@ test("saveTranslations drops the languages that were removed", async () => {
   });
 });
 
-test("softDelete marks the experience and its translations", async () => {
-  const { repository, experience, translation } = createRepositories();
-  const deletedAt = new Date("2024-01-01T00:00:00Z");
+test("hardDelete removes the experience row", async () => {
+  const { repository, experience } = createRepositories();
 
-  await repository.softDelete(EXPERIENCE_ID, deletedAt);
+  await repository.hardDelete(EXPERIENCE_ID);
 
-  expect(experience.update).toHaveBeenCalledWith({ id: EXPERIENCE_ID }, { deletedAt });
-  expect(translation.update).toHaveBeenCalledWith({ id: EXPERIENCE_ID }, { deletedAt });
+  expect(experience.delete).toHaveBeenCalledWith({ id: EXPERIENCE_ID });
 });
 
-test("findReadOne filters by user, language and soft deletion", async () => {
+test("findReadOne filters by user and language", async () => {
   const { repository, experience } = createRepositories();
   experience.findOne.mockResolvedValue({ id: EXPERIENCE_ID });
 
@@ -175,9 +170,8 @@ test("findReadOne filters by user, language and soft deletion", async () => {
   expect(experience.findOne).toHaveBeenCalledWith({
     where: {
       id: EXPERIENCE_ID,
-      deletedAt: expect.anything(),
       user: { id: USER_ID },
-      translations: { languageId: LANGUAGE_ID, deletedAt: expect.anything() },
+      translations: { languageId: LANGUAGE_ID },
     },
     relations: { translations: true },
   });
@@ -198,9 +192,8 @@ test("findReadPage paginates and sorts the results", async () => {
 
   expect(experience.findAndCount).toHaveBeenCalledWith({
     where: {
-      deletedAt: expect.anything(),
       user: { id: USER_ID },
-      translations: { languageId: LANGUAGE_ID, deletedAt: expect.anything() },
+      translations: { languageId: LANGUAGE_ID },
     },
     relations: { translations: true },
     order: { startDate: "DESC", id: "DESC" },
@@ -213,7 +206,6 @@ test("findReadPage maps every sort option to its order", async () => {
   const orders: Record<string, unknown> = {
     start_date_desc: { startDate: "DESC", id: "DESC" },
     start_date_asc: { startDate: "ASC", id: "ASC" },
-    created_at_desc: { createdAt: "DESC", id: "DESC" },
   };
 
   for (const [sort, order] of Object.entries(orders)) {

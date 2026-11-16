@@ -22,23 +22,18 @@ const experience = (overrides: Record<string, unknown> = {}) => ({
   websiteUrl: "https://example.com",
   startDate: "2020-01-01",
   endDate: null,
-  deletedAt: null,
-  createdAt: new Date("2024-01-01T00:00:00Z"),
-  updatedAt: new Date("2024-02-01T00:00:00Z"),
   translations: [
     {
       id: EXPERIENCE_ID,
       languageId: "language-en",
       title: "Developer",
       description: "Built things",
-      deletedAt: null,
     },
     {
       id: EXPERIENCE_ID,
       languageId: "language-es",
       title: "Desarrollador",
       description: "Construyó cosas",
-      deletedAt: null,
     },
   ],
   ...overrides,
@@ -51,7 +46,7 @@ const createRepository = () => ({
   create: jest.fn().mockResolvedValue(experience()),
   saveFields: jest.fn().mockResolvedValue(undefined),
   saveTranslations: jest.fn().mockResolvedValue(undefined),
-  softDelete: jest.fn().mockResolvedValue(undefined),
+  hardDelete: jest.fn().mockResolvedValue(undefined),
   findReadOne: jest.fn().mockResolvedValue(experience()),
   findReadPage: jest.fn().mockResolvedValue({ items: [experience()], total: 1 }),
 });
@@ -116,12 +111,8 @@ test("update rejects a malformed id", async () => {
   expect(repository.findById).not.toHaveBeenCalled();
 });
 
-test("update reports MSG-10 for a missing, deleted or foreign experience", async () => {
-  for (const existing of [
-    null,
-    experience({ deletedAt: new Date() }),
-    experience({ userId: "another-user" }),
-  ]) {
+test("update reports MSG-10 for a missing or foreign experience", async () => {
+  for (const existing of [null, experience({ userId: "another-user" })]) {
     const { service, repository } = buildService();
     repository.findById.mockResolvedValue(existing);
 
@@ -141,40 +132,24 @@ test("update validates the body before writing", async () => {
   expect(repository.saveTranslations).not.toHaveBeenCalled();
 });
 
-test("remove soft deletes the experience with a timestamp", async () => {
+test("remove hard deletes the experience", async () => {
   const { service, repository } = buildService();
 
-  await expect(service.remove(USER_ID, EXPERIENCE_ID, null)).resolves.toBeUndefined();
-  expect(repository.softDelete).toHaveBeenCalledWith(EXPERIENCE_ID, expect.any(Date));
-});
-
-test("remove is idempotent for an already deleted experience", async () => {
-  const { service, repository } = buildService();
-  repository.findById.mockResolvedValue(experience({ deletedAt: new Date() }));
-
-  await expect(service.remove(USER_ID, EXPERIENCE_ID, null)).resolves.toBeUndefined();
-  expect(repository.softDelete).not.toHaveBeenCalled();
-});
-
-test("remove rejects a stale If-Match with MSG-11", async () => {
-  const { service, repository } = buildService();
-
-  await expect(
-    service.remove(USER_ID, EXPERIENCE_ID, "2024-02-01T00:00:00.000Z"),
-  ).resolves.toBeUndefined();
-  await expect(
-    service.remove(USER_ID, EXPERIENCE_ID, "2020-01-01T00:00:00.000Z"),
-  ).rejects.toMatchObject({ code: "MSG-11", httpStatus: 412 });
-  expect(repository.softDelete).toHaveBeenCalledTimes(1);
+  await expect(service.remove(USER_ID, EXPERIENCE_ID)).resolves.toBeUndefined();
+  expect(repository.hardDelete).toHaveBeenCalledWith(EXPERIENCE_ID);
 });
 
 test("remove reports MSG-10 for a missing or foreign experience", async () => {
   const { service, repository } = buildService();
-  repository.findById.mockResolvedValue(experience({ userId: "another-user" }));
 
-  await expect(service.remove(USER_ID, EXPERIENCE_ID, null)).rejects.toMatchObject({
-    code: "MSG-10",
-  });
+  for (const existing of [null, experience({ userId: "another-user" })]) {
+    repository.findById.mockResolvedValue(existing);
+
+    await expect(service.remove(USER_ID, EXPERIENCE_ID)).rejects.toMatchObject({
+      code: "MSG-10",
+    });
+  }
+  expect(repository.hardDelete).not.toHaveBeenCalled();
 });
 
 test("list returns the page and its metadata", async () => {
@@ -188,8 +163,6 @@ test("list returns the page and its metadata", async () => {
         start_date: "2020-01-01",
         end_date: null,
         translation: { language: "EN", title: "Developer", description: "Built things" },
-        created_at: "2024-01-01T00:00:00.000Z",
-        updated_at: "2024-02-01T00:00:00.000Z",
       },
     ],
     meta: {
@@ -250,8 +223,6 @@ test("get returns one experience in the requested language", async () => {
     start_date: "2020-01-01",
     end_date: null,
     translation: { language: "ES", title: "Desarrollador", description: "Construyó cosas" },
-    created_at: "2024-01-01T00:00:00.000Z",
-    updated_at: "2024-02-01T00:00:00.000Z",
   });
   expect(repository.findReadOne).toHaveBeenCalledWith(USER_ID, EXPERIENCE_ID, "language-es");
 });

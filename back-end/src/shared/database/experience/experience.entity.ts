@@ -1,13 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import User from "../user/user.entity";
 import ExperienceTranslation from "./experience_translation.entity";
 
@@ -32,18 +23,9 @@ export default class Experience {
   @JoinColumn({ name: "user_id" })
   user!: User;
 
-  @Column({ name: "deleted_at", type: "timestamptz", nullable: true })
-  deletedAt!: Date | null;
-
   @OneToMany(
     () => ExperienceTranslation,
     (translation) => translation.experience,
   )
   translations!: ExperienceTranslation[];
-
-  @CreateDateColumn({ name: "created_at", type: "timestamptz" })
-  createdAt!: Date;
-
-  @UpdateDateColumn({ name: "updated_at", type: "timestamptz" })
-  updatedAt!: Date;
 }

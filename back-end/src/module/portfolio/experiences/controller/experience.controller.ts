@@ -16,11 +16,6 @@ const readLanguage = (request: Request): string | undefined => {
   return typeof language === "string" ? language : undefined;
 };
 
-const readIfMatch = (request: Request): string | null => {
-  const header = request.headers["if-match"];
-  return typeof header === "string" && header !== "" ? header : null;
-};
-
 const createSendError =
   (messageRepository: MessageRepository): SendError =>
   async (error, language, response) => {
@@ -88,7 +83,7 @@ export default class ExperienceController {
 
   remove: RequestHandler = async (request, response) => {
     try {
-      await this.service.remove(requireUserId(request), request.params.id, readIfMatch(request));
+      await this.service.remove(requireUserId(request), request.params.id);
       response.status(204).send();
     } catch (error) {
       await this.sendError(error, readLanguage(request), response);

@@ -132,7 +132,7 @@ Evaluated in this order; the first failure is returned.
 | `UNAUTHORIZED` | `401` | Missing/invalid `accessToken`, or token does not resolve to the account owner |
 | `MSG-5` | `403` | Authenticated user does not have the `PORTFOLIO_UPDATE` feature |
 | `INVALID_ID` | `400` | `{id}` in the path is not a well-formed identifier |
-| `MSG-10` | `404` | Experience `{id}` does not exist, is soft-deleted, or is not owned by the caller |
+| `MSG-10` | `404` | Experience `{id}` does not exist or is not owned by the caller |
 | `MSG-6` | `400` | A `language` value in `translations[]` does not exist in the database |
 | `MSG-7` | `400` | The same `language` appears more than once in `translations[]` |
 | `MSG-8` | `400` | `translations` is missing, empty, or not an array |
@@ -149,9 +149,9 @@ Evaluated in this order; the first failure is returned.
 **Purpose:** Delete an existing experience. Only the owner of the account that owns the experience may delete it, and the user must have the feature `PORTFOLIO_DELETE`.
 **Method/Path:** `DELETE /portfolio/experiences/{id}`
 
-**Semantics:** **soft delete.** Sets `deleted_at`; the row is excluded from every read path (`GET`, list, and all Update validations). A retention job hard-deletes rows past the retention window. Deleting cascades to the experience's `translations` (same soft-delete timestamp). No request body is expected — any body sent is ignored.
+**Semantics:** **hard delete.** The row is removed from the database and the delete cascades to the experience's `translations`. The row is gone from every read path (`GET`, list, and all Update validations). No request body is expected — any body sent is ignored.
 
-**Idempotency:** repeating the call on an already-deleted experience owned by the caller returns `204` again. Ownership is checked against the row *ignoring* `deleted_at`, so a repeat call can distinguish "mine, already gone" (`204`) from "never existed / not mine" (`404`). State never changes after the first call, so the operation is idempotent.
+**Repeat calls:** repeating the call on an already-deleted experience returns `404 MSG-10`, because the row no longer exists.
 
 ### URL parameters
 
@@ -166,8 +166,7 @@ Evaluated in this order; the first failure is returned.
 
 ### Success
 
-- **`204 No Content`** — empty body`.
-- Already-deleted-but-owned → **`204 No Content`** (see Idempotency above).
+- **`204 No Content`** — empty body.
 
 ### Errors
 
@@ -178,8 +177,7 @@ Evaluated in this order; the first failure is returned.
 | `UNAUTHORIZED` | `401` | Missing/invalid `accessToken`, or token does not resolve to the account owner |
 | `MSG-5` | `403` | Authenticated user does not have the `PORTFOLIO_DELETE` feature |
 | `INVALID_ID` | `400` | `{id}` in the path is not a well-formed identifier |
-| `MSG-10` | `404` | Experience `{id}` never existed, or was not owned by the caller |
-| `MSG-11` | `412` | `If-Match` supplied and does not match the current `updated_at` (concurrent modification) |
+| `MSG-10` | `404` | Experience `{id}` does not exist or was not owned by the caller |
 
 There are no body-validation errors: this endpoint accepts no body.
 
@@ -188,7 +186,7 @@ There are no body-validation errors: this endpoint accepts no body.
 **Purpose:** Publicly list the experiences of a given user that have a translation in the requested language. **No authentication, no feature check** — the endpoint is anonymously accessible, so the portfolio owner is identified in the path rather than by the session.
 **Method/Path:** `GET /users/{userId}/portfolio/experiences?language={code}`
 
-**Semantics:** the result is an **inner join** between the user's experiences and their translations on the requested `language`. An experience with no translation in that language is not returned — including one with **zero** translations at all, which can never match any language filter. Each returned item carries **only** the matching translation; other languages are omitted. Soft-deleted experiences (`deleted_at IS NOT NULL`) are excluded, as are experiences of a soft-deleted user.
+**Semantics:** the result is an **inner join** between the user's experiences and their translations on the requested `language`. An experience with no translation in that language is not returned — including one with **zero** translations at all, which can never match any language filter. Each returned item carries **only** the matching translation; other languages are omitted. Experiences of a soft-deleted user are excluded.
 
 **Empty result is not an error:** a valid user with no matching experiences → `200` with `"items": []`, never `404`.
 
@@ -205,7 +203,7 @@ There are no body-validation errors: this endpoint accepts no body.
 | `language` | **yes** | Language code that must exist in the languages catalog. **Required** — it filters the result set, so defaulting to `"EN"` would silently hide rows. |
 | `limit` | no | Page size, integer `1..100`. Default `20`. |
 | `page` | no | 1-based page number, integer `≥ 1`. Default `1`. |
-| `sort` | no | `start_date_desc` (default) \| `start_date_asc` \| `created_at_desc`. Ties broken by `id` for stable pagination. |
+| `sort` | no | `start_date_desc` (default) \| `start_date_asc`. Ties broken by `id` for stable pagination. |
 
 ### Success
 
@@ -223,9 +221,7 @@ There are no body-validation errors: this endpoint accepts no body.
         "language": "ES",
         "title": "Ingeniero de Software",
         "description": "Descripción del puesto."
-      },
-      "created_at": "2024-01-10T12:00:00Z",
-      "updated_at": "2026-11-14T09:31:07Z"
+      }
     }
   ],
   "meta": {
@@ -264,7 +260,7 @@ Evaluated in this order; the first failure is returned.
 **Purpose:** Publicly fetch a single experience of a given user, as seen in the requested language. **No authentication, no feature check** — the portfolio owner is identified in the path, not by the session.
 **Method/Path:** `GET /users/{userId}/portfolio/experiences/{id}?language={code}`
 
-**Semantics:** returns the experience **only if** it has a translation in the requested `language` — the resource being addressed is "this experience as rendered in language X". An experience with no translation in that language (including one with **zero** translations) is treated as not found. Only the matching translation is included; other languages are omitted. Soft-deleted experiences (`deleted_at IS NOT NULL`) and experiences of a soft-deleted user are excluded.
+**Semantics:** returns the experience **only if** it has a translation in the requested `language` — the resource being addressed is "this experience as rendered in language X". An experience with no translation in that language (including one with **zero** translations) is treated as not found. Only the matching translation is included; other languages are omitted. Experiences of a soft-deleted user are excluded.
 
 **`404` is not "hidden by accident":** an experience that exists but lacks the requested language returns the *same* `404 MSG-10` as an experience that doesn't exist at all. That is deliberate — see notes.
 
@@ -297,9 +293,7 @@ No `limit` / `page` / `sort` — this endpoint returns exactly one object, so `I
     "language": "ES",
     "title": "Ingeniero de Software",
     "description": "Descripción del puesto."
-  },
-  "created_at": "2024-01-10T12:00:00Z",
-  "updated_at": "2026-11-14T09:31:07Z"
+  }
 }
 ```
 
@@ -319,7 +313,7 @@ Evaluated in this order; the first failure is returned.
 |---|---:|---|
 | `INVALID_ID` | `400` | `userId` or `id` in the path is not a well-formed identifier (the message names which) |
 | `MSG-4` | `404` | User `{userId}` does not exist or is soft-deleted |
-| `MSG-10` | `404` | Experience `{id}` does not exist, is soft-deleted, belongs to another user, or has **no translation in `language`** |
+| `MSG-10` | `404` | Experience `{id}` does not exist, belongs to another user, or has **no translation in `language`** |
 | `MISSING_FIELD` | `400` | `language` query parameter absent or empty |
 | `MSG-6` | `400` | `language` is not present in the languages catalog |
 

@@ -16,9 +16,6 @@ export default class ExperienceTranslation {
   @PrimaryColumn("uuid", { name: "language_id" })
   languageId!: string;
 
-  @Column({ name: "deleted_at", type: "timestamptz", nullable: true })
-  deletedAt!: Date | null;
-
   @ManyToOne(() => Experience, { nullable: false, onDelete: "CASCADE" })
   @JoinColumn({ name: "id" })
   experience!: Experience;
