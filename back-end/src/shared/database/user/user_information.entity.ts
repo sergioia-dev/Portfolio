@@ -19,12 +19,15 @@ export default class UserInformation {
   @Column({ type: "varchar", length: 50, nullable: true })
   country!: string | null;
 
-  @Column({ type: "text", name: "github_url", nullable: true })
+  @Column({ type: "varchar", length: 2048, name: "github_url", nullable: true })
   githubUrl!: string | null;
 
-  @Column({ type: "text", name: "gitlab_url", nullable: true })
+  @Column({ type: "varchar", length: 2048, name: "gitlab_url", nullable: true })
   gitlabUrl!: string | null;
 
-  @Column({ type: "text", name: "linkedin_url", nullable: true })
+  @Column({ type: "varchar", length: 2048, name: "linkedin_url", nullable: true })
   linkedinUrl!: string | null;
+
+  @Column({ type: "varchar", length: 2048, name: "business_email", nullable: true })
+  businessEmail!: string | null;
 }

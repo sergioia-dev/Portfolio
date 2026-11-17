@@ -28,10 +28,13 @@ const createService = () => ({
   register: jest.fn(),
   login: jest.fn(),
   refresh: jest.fn(),
-  deleteAccount: jest.fn(),
 });
 
 const createMessageRepository = () => ({ getMessage: jest.fn() });
+
+const createUserLookup = (user: { isDeleted: boolean } | null = { isDeleted: false }) => ({
+  findById: jest.fn(async () => user),
+});
 
 const buildController = () => {
   const service = createService();
@@ -167,28 +170,7 @@ test("logout clears both cookies and responds 200", () => {
   expect(response.json).toHaveBeenCalledWith({ success: true });
 });
 
-test("deleteAccount soft-deletes the authenticated user", async () => {
-  const { controller, service } = buildController();
-  const response = createResponse();
-
-  await call(controller.deleteAccount, { userId: "user-id" }, response);
-
-  expect(service.deleteAccount).toHaveBeenCalledWith("user-id");
-  expect(response.status).toHaveBeenCalledWith(200);
-  expect(response.json).toHaveBeenCalledWith({ success: true });
-});
-
-test("deleteAccount rejects a request without an authenticated user", async () => {
-  const { controller, service } = buildController();
-  const response = createResponse();
-
-  await call(controller.deleteAccount, { query: {} }, response);
-
-  expect(service.deleteAccount).not.toHaveBeenCalled();
-  expect(response.status).toHaveBeenCalledWith(401);
-});
-
-test("requireAuth attaches the user id from a valid access cookie", () => {
+test("requireAuth attaches the user id from a valid access cookie", async () => {
   const jwt = { verifyAccessToken: jest.fn(() => ({ sub: "user-id" })) };
   const request = {
     query: {},
@@ -197,11 +179,11 @@ test("requireAuth attaches the user id from a valid access cookie", () => {
   const response = createResponse();
   const next = jest.fn();
 
-  requireAuth(jwt as unknown as Jwt, createMessageRepository() as unknown as MessageRepository)(
-    request,
-    response as unknown as Response,
-    next,
-  );
+  await requireAuth(
+    jwt as unknown as Jwt,
+    createMessageRepository() as unknown as MessageRepository,
+    createUserLookup(),
+  )(request, response as unknown as Response, next);
 
   expect(jwt.verifyAccessToken).toHaveBeenCalledWith("access-token");
   expect(request.userId).toBe("user-id");
@@ -209,7 +191,7 @@ test("requireAuth attaches the user id from a valid access cookie", () => {
   expect(response.json).not.toHaveBeenCalled();
 });
 
-test("requireAuth attaches the token permissions", () => {
+test("requireAuth attaches the token permissions", async () => {
   const jwt = {
     verifyAccessToken: jest.fn(() => ({ sub: "user-id", permissions: ["PORTFOLIO_CREATE"] })),
   };
@@ -218,11 +200,11 @@ test("requireAuth attaches the token permissions", () => {
     cookies: { accessToken: "access-token" },
   } as unknown as AuthenticatedRequest;
 
-  requireAuth(jwt as unknown as Jwt, createMessageRepository() as unknown as MessageRepository)(
-    request,
-    createResponse() as unknown as Response,
-    jest.fn(),
-  );
+  await requireAuth(
+    jwt as unknown as Jwt,
+    createMessageRepository() as unknown as MessageRepository,
+    createUserLookup(),
+  )(request, createResponse() as unknown as Response, jest.fn());
 
   expect(request.permissions).toEqual(["PORTFOLIO_CREATE"]);
 });
@@ -232,6 +214,7 @@ test("requireAuth rejects a missing or invalid access cookie", async () => {
   const middleware = requireAuth(
     jwt as unknown as Jwt,
     createMessageRepository() as unknown as MessageRepository,
+    createUserLookup(),
   );
 
   const missingResponse = createResponse();
@@ -262,13 +245,48 @@ test("requireAuth rejects a missing or invalid access cookie", async () => {
   expect(invalidResponse.status).toHaveBeenCalledWith(401);
 });
 
+test("requireAuth rejects a soft-deleted account", async () => {
+  const jwt = { verifyAccessToken: jest.fn(() => ({ sub: "user-id" })) };
+  const response = createResponse();
+  const next = jest.fn();
+
+  await requireAuth(
+    jwt as unknown as Jwt,
+    createMessageRepository() as unknown as MessageRepository,
+    createUserLookup({ isDeleted: true }),
+  )(
+    { query: {}, cookies: { accessToken: "access-token" } } as unknown as Request,
+    response as unknown as Response,
+    next,
+  );
+
+  expect(next).not.toHaveBeenCalled();
+  expect(response.status).toHaveBeenCalledWith(401);
+  expect(response.json).toHaveBeenCalledWith({ code: "UNAUTHORIZED", message: "Unauthorized" });
+});
+
+test("requireAuth rejects an account that no longer exists", async () => {
+  const jwt = { verifyAccessToken: jest.fn(() => ({ sub: "user-id" })) };
+  const response = createResponse();
+  const next = jest.fn();
+
+  await requireAuth(
+    jwt as unknown as Jwt,
+    createMessageRepository() as unknown as MessageRepository,
+    createUserLookup(null),
+  )(
+    { query: {}, cookies: { accessToken: "access-token" } } as unknown as Request,
+    response as unknown as Response,
+    next,
+  );
+
+  expect(next).not.toHaveBeenCalled();
+  expect(response.status).toHaveBeenCalledWith(401);
+});
+
 test("authRouter registers every auth route", () => {
   const { controller } = buildController();
-  const router = authRouter(
-    controller,
-    {} as Jwt,
-    createMessageRepository() as unknown as MessageRepository,
-  );
+  const router = authRouter(controller);
   const stack = (
     router as unknown as {
       stack: { route?: { path: string; methods: Record<string, boolean> } }[];
@@ -278,13 +296,7 @@ test("authRouter registers every auth route", () => {
     .filter((layer) => layer.route)
     .map((layer) => `${Object.keys(layer.route?.methods ?? {})[0]} ${layer.route?.path}`);
 
-  expect(routes).toEqual([
-    "post /register",
-    "post /login",
-    "post /refresh",
-    "post /logout",
-    "delete /account",
-  ]);
+  expect(routes).toEqual(["post /register", "post /login", "post /refresh", "post /logout"]);
 });
 
 test("register localizes the error message with the language query param", async () => {
@@ -348,7 +360,11 @@ test("requireAuth localizes the unauthorized message", async () => {
   messageRepository.getMessage.mockResolvedValue("No autorizado");
   const response = createResponse();
 
-  await requireAuth(jwt as unknown as Jwt, messageRepository as unknown as MessageRepository)(
+  await requireAuth(
+    jwt as unknown as Jwt,
+    messageRepository as unknown as MessageRepository,
+    createUserLookup(),
+  )(
     { query: { language: "es" } } as unknown as Request,
     response as unknown as Response,
     jest.fn(),

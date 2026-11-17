@@ -15,6 +15,11 @@ const FUNCTIONALITIES = [
     name: "PORTFOLIO_DELETE",
     description: "Can delete a user owns object",
   },
+  {
+    name: "ADMINISTRATOR",
+    description:
+      "Can search users and update or soft delete accounts of users who do not have the ADMINISTRATOR feature",
+  },
 ];
 
 const seedFunctionalities = async (dataSource: DataSource) => {

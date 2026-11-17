@@ -98,7 +98,7 @@ export default class AuthService {
     const { email, password } = validation.value;
 
     const user = await this.repository.findByEmailWithRole(email);
-    if (!user || user.deletedAt) throw invalidCredentials();
+    if (!user || user.isDeleted) throw invalidCredentials();
     if (!(await this.hasher.compare(password, user.password))) throw invalidCredentials();
 
     return {
@@ -124,7 +124,7 @@ export default class AuthService {
     }
 
     const user = await this.repository.findByIdWithRole(subject);
-    if (!user || user.deletedAt) throw unauthorized();
+    if (!user || user.isDeleted) throw unauthorized();
 
     return this.jwt.generateAccessToken(
       user.id,
@@ -132,9 +132,5 @@ export default class AuthService {
       user.rol.name,
       user.rol.functionalities.map((functionality) => functionality.name),
     );
-  }
-
-  async deleteAccount(userId: string): Promise<void> {
-    await this.repository.softDelete(userId);
   }
 }

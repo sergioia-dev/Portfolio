@@ -31,6 +31,8 @@ const createService = () => ({
 
 const createMessageRepository = () => ({ getMessage: jest.fn() });
 
+const createUserLookup = () => ({ findById: jest.fn(async () => ({ isDeleted: false })) });
+
 const buildController = () => {
   const service = createService();
   const messageRepository = createMessageRepository();
@@ -379,6 +381,7 @@ test("the router wires the tag endpoints", () => {
     controller,
     {} as Jwt,
     createMessageRepository() as unknown as MessageRepository,
+    createUserLookup(),
   );
 
   expect(router.stack).toHaveLength(5);

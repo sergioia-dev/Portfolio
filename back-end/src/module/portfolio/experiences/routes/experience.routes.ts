@@ -1,6 +1,6 @@
 import { Router } from "express";
 import type Jwt from "../../../../shared/security/jwt/jwt";
-import { requireAuth } from "../../../auth/controller/auth.controller";
+import { requireAuth, type UserLookup } from "../../../auth/controller/auth.controller";
 import type MessageRepository from "../../../auth/repository/message.repository";
 import type ExperienceController from "../controller/experience.controller";
 import { requireFeature } from "../controller/experience.controller";
@@ -9,9 +9,10 @@ export const experienceRouter = (
   controller: ExperienceController,
   jwt: Jwt,
   messageRepository: MessageRepository,
+  userLookup: UserLookup,
 ): Router => {
   const router = Router();
-  const authenticated = requireAuth(jwt, messageRepository);
+  const authenticated = requireAuth(jwt, messageRepository, userLookup);
 
   router.post(
     "/portfolio/experiences",

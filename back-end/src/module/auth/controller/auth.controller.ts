@@ -9,6 +9,10 @@ export interface AuthenticatedRequest extends Request {
   permissions?: string[];
 }
 
+export interface UserLookup {
+  findById(id: string): Promise<{ isDeleted: boolean } | null>;
+}
+
 type SendError = (
   error: unknown,
   language: string | undefined,
@@ -43,7 +47,11 @@ const createSendError =
     response.status(500).json({ code: "INTERNAL_SERVER_ERROR", message: "Internal Server Error" });
   };
 
-export const requireAuth = (jwt: Jwt, messageRepository: MessageRepository): RequestHandler => {
+export const requireAuth = (
+  jwt: Jwt,
+  messageRepository: MessageRepository,
+  userLookup: UserLookup,
+): RequestHandler => {
   const sendError = createSendError(messageRepository);
   return async (request, response, next) => {
     const language = readLanguage(request);
@@ -52,14 +60,24 @@ export const requireAuth = (jwt: Jwt, messageRepository: MessageRepository): Req
       await sendError(unauthorized(), language, response);
       return;
     }
+
+    let payload: ReturnType<Jwt["verifyAccessToken"]>;
     try {
-      const payload = jwt.verifyAccessToken(token);
-      (request as AuthenticatedRequest).userId = payload.sub;
-      (request as AuthenticatedRequest).permissions = payload.permissions;
-      next();
+      payload = jwt.verifyAccessToken(token);
     } catch {
       await sendError(unauthorized(), language, response);
+      return;
     }
+
+    const user = await userLookup.findById(payload.sub);
+    if (!user || user.isDeleted) {
+      await sendError(unauthorized(), language, response);
+      return;
+    }
+
+    (request as AuthenticatedRequest).userId = payload.sub;
+    (request as AuthenticatedRequest).permissions = payload.permissions;
+    next();
   };
 };
 
@@ -106,16 +124,5 @@ export default class AuthController {
     response.clearCookie("accessToken", { path: "/" });
     response.clearCookie("refreshToken", { path: "/" });
     response.status(200).json({ success: true });
-  };
-
-  deleteAccount: RequestHandler = async (request, response) => {
-    try {
-      const userId = (request as AuthenticatedRequest).userId;
-      if (!userId) throw unauthorized();
-      await this.service.deleteAccount(userId);
-      response.status(200).json({ success: true });
-    } catch (error) {
-      await this.sendError(error, readLanguage(request), response);
-    }
   };
 }

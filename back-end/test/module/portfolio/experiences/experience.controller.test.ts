@@ -33,6 +33,8 @@ const createService = () => ({
 
 const createMessageRepository = () => ({ getMessage: jest.fn() });
 
+const createUserLookup = () => ({ findById: jest.fn(async () => ({ isDeleted: false })) });
+
 const buildController = () => {
   const service = createService();
   const messageRepository = createMessageRepository();
@@ -259,6 +261,7 @@ test("the router registers the documented endpoints", () => {
     controller,
     {} as Jwt,
     createMessageRepository() as unknown as MessageRepository,
+    createUserLookup(),
   );
   const stack = (
     router as unknown as {

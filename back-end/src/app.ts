@@ -2,6 +2,10 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import AdministrationController from "./module/administration/controller/administration.controller";
+import AdministrationRepository from "./module/administration/repository/administration.repository";
+import { administrationRouter } from "./module/administration/routes/administration.routes";
+import AdministrationService from "./module/administration/service/administration.service";
 import AuthController from "./module/auth/controller/auth.controller";
 import AuthRepository from "./module/auth/repository/auth.repository";
 import MessageRepository from "./module/auth/repository/message.repository";
@@ -27,6 +31,10 @@ import TagController from "./module/portfolio/tags/controller/tag.controller";
 import TagRepository from "./module/portfolio/tags/repository/tag.repository";
 import { tagRouter } from "./module/portfolio/tags/routes/tag.routes";
 import TagService from "./module/portfolio/tags/service/tag.service";
+import UserController from "./module/users/controller/user.controller";
+import UserRepository from "./module/users/repository/user.repository";
+import { userRouter } from "./module/users/routes/user.routes";
+import UserService from "./module/users/service/user.service";
 import dataSource from "./shared/database/data-source";
 import Jwt from "./shared/security/jwt/jwt";
 import { requestLimiter, speedLimiter } from "./shared/security/rate-limiting/limiter";
@@ -34,6 +42,7 @@ import { requestLimiter, speedLimiter } from "./shared/security/rate-limiting/li
 const app = express();
 const jwt = new Jwt();
 const messageRepository = new MessageRepository(dataSource);
+const userRepository = new UserRepository(dataSource);
 const authController = new AuthController(
   new AuthService(new AuthRepository(dataSource), jwt, new BcryptPasswordHasher()),
   messageRepository,
@@ -58,6 +67,14 @@ const contributionController = new ContributionController(
   new ContributionService(new ContributionRepository(dataSource)),
   messageRepository,
 );
+const userController = new UserController(
+  new UserService(userRepository, dataSource, new BcryptPasswordHasher()),
+  messageRepository,
+);
+const administrationController = new AdministrationController(
+  new AdministrationService(new AdministrationRepository(dataSource)),
+  messageRepository,
+);
 
 app.use(
   cors({
@@ -73,11 +90,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(speedLimiter);
 app.use(requestLimiter);
-app.use("/auth", authRouter(authController, jwt, messageRepository));
-app.use(experienceRouter(experienceController, jwt, messageRepository));
-app.use(tagRouter(tagController, jwt, messageRepository));
-app.use(certificationRouter(certificationController, jwt, messageRepository));
-app.use(projectRouter(projectController, jwt, messageRepository));
-app.use(contributionRouter(contributionController, jwt, messageRepository));
+app.use("/auth", authRouter(authController));
+app.use("/users", userRouter(userController, jwt, messageRepository, userRepository));
+app.use(
+  "/users/administration",
+  administrationRouter(administrationController, jwt, messageRepository, userRepository),
+);
+app.use(experienceRouter(experienceController, jwt, messageRepository, userRepository));
+app.use(tagRouter(tagController, jwt, messageRepository, userRepository));
+app.use(certificationRouter(certificationController, jwt, messageRepository, userRepository));
+app.use(projectRouter(projectController, jwt, messageRepository, userRepository));
+app.use(contributionRouter(contributionController, jwt, messageRepository, userRepository));
 
 export default app;

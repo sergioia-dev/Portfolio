@@ -30,6 +30,8 @@ const createService = () => ({
 const createMessageRepository = () =>
   ({ getMessage: jest.fn().mockResolvedValue(null) }) as unknown as MessageRepository;
 
+const createUserLookup = () => ({ findById: jest.fn(async () => ({ isDeleted: false })) });
+
 const createResponse = () => {
   const response = {
     status: jest.fn(),
@@ -282,7 +284,12 @@ test("query arrays fall back to the first language", async () => {
 
 test("contributionRouter declares the authenticated and public routes", () => {
   const { controller, messageRepository } = buildController();
-  const router = contributionRouter(controller, {} as unknown as Jwt, messageRepository);
+  const router = contributionRouter(
+    controller,
+    {} as unknown as Jwt,
+    messageRepository,
+    createUserLookup(),
+  );
   const stack = (
     router as unknown as { stack: { route?: { path: string; methods: Record<string, boolean> } }[] }
   ).stack;

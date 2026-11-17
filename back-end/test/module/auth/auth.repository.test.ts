@@ -89,13 +89,3 @@ test("create saves a new user entity", async () => {
   expect(fakeRepository.create).toHaveBeenCalledWith(input);
   expect(fakeRepository.save).toHaveBeenCalledWith(input);
 });
-
-test("softDelete clears the identifiers and marks the user deleted", async () => {
-  const { repository, fakeRepository } = createRepository();
-
-  await repository.softDelete("user-id");
-  expect(fakeRepository.update).toHaveBeenCalledWith(
-    { id: "user-id" },
-    { email: null, username: null, password: "", deletedAt: true },
-  );
-});

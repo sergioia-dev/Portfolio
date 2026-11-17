@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
 import Provider from "./provider.entity";
 import Role from "./role.entity";
+import UserInformation from "./user_information.entity";
 
 @Entity({ name: "users" })
 export default class User {
@@ -24,6 +25,15 @@ export default class User {
   @JoinColumn({ name: "rol_id" })
   rol!: Role;
 
-  @Column({ type: "boolean", name: "deleted_at", nullable: true })
-  deletedAt!: boolean | null;
+  @Column({ type: "timestamptz", name: "deleted_at", nullable: true })
+  deletedAt!: Date | null;
+
+  @Column({ type: "boolean", name: "is_deleted", nullable: false, default: false })
+  isDeleted!: boolean;
+
+  @OneToOne(
+    () => UserInformation,
+    (information) => information.user,
+  )
+  information!: UserInformation | null;
 }

@@ -11,7 +11,7 @@
 
 ## Language
 
-- `register`, `login`, `logout`, and `delete account` accept an optional `language` URL query parameter — `?language=en` or `?language=es`.
+- `register`, `login`, and `logout` accept an optional `language` URL query parameter — `?language=en` or `?language=es`.
 - Error `message` strings are returned in the requested language; the `code` is language-independent.
 - Values are matched case-insensitively against `languages.name` (`EN`, `ES`). Unknown or missing `language` falls back to English (`EN`).
 - `refresh` does **not** accept `language`; its errors are always English.
@@ -103,24 +103,4 @@
 ### Success
 - **`200 OK`** — clears the `accessToken` and `refreshToken` cookies (set them expired with `Max-Age=0`).
 
----
-
-## 5. Delete Account
-
-**Purpose:** Soft-delete the authenticated user.
-**Method/Path:** `DELETE /auth/account` *(path TBD)*
-
-### Behavior
-- Set `email = NULL`, `username = NULL`.
-- Set `deleted_at = true` (boolean soft-delete flag).
-- Clear the password hash
-
-### Success
-- **`200 OK`** (or `204 No Content`).
-
-### Errors
-
-| Code | HTTP | Condition |
-|---|---:|---|
-| `UNAUTHORIZED` | `401` | Access token missing, invalid, or expired (must be authenticated) |
 

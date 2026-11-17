@@ -13,6 +13,7 @@ const buildUser = (overrides: Partial<User> = {}): User =>
     email: "john@example.com",
     password: "hashed:Password1!",
     deletedAt: null,
+    isDeleted: false,
     rol: {
       id: "role-id",
       name: "VISITOR",
@@ -34,7 +35,6 @@ const buildService = () => {
     })),
     findProviderByName: jest.fn(async () => ({ id: "provider-id", name: "LOCAL" })),
     create: jest.fn(async (input: Partial<User>) => buildUser(input)),
-    softDelete: jest.fn(async () => undefined),
   };
   const jwt = {
     generateAccessToken: jest.fn(() => "access-token"),
@@ -192,7 +192,7 @@ test("login rejects unknown, deleted and wrongly authenticated users with MSG-4"
     service.login({ email: "john@example.com", password: "Password1!" }),
   ).rejects.toMatchObject({ code: "MSG-4", httpStatus: 401 });
 
-  repository.findByEmailWithRole.mockResolvedValue(buildUser({ deletedAt: true }));
+  repository.findByEmailWithRole.mockResolvedValue(buildUser({ isDeleted: true }));
   await expect(
     service.login({ email: "john@example.com", password: "Password1!" }),
   ).rejects.toMatchObject({ code: "MSG-4" });
@@ -232,15 +232,8 @@ test("refresh rejects a missing, invalid, or deleted-user token with 401", async
   repository.findByIdWithRole.mockResolvedValue(null);
   await expect(service.refresh("refresh-token")).rejects.toMatchObject({ code: "UNAUTHORIZED" });
 
-  repository.findByIdWithRole.mockResolvedValue(buildUser({ deletedAt: true }));
+  repository.findByIdWithRole.mockResolvedValue(buildUser({ isDeleted: true }));
   await expect(service.refresh("refresh-token")).rejects.toMatchObject({ code: "UNAUTHORIZED" });
-});
-
-test("deleteAccount soft-deletes the user", async () => {
-  const { service, repository } = buildService();
-
-  await service.deleteAccount("user-id");
-  expect(repository.softDelete).toHaveBeenCalledWith("user-id");
 });
 
 test("bcrypt hasher hashes and compares passwords", async () => {

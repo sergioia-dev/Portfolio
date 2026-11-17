@@ -49,10 +49,4 @@ export default class AuthRepository {
     const repository = this.dataSource.getRepository(User);
     return repository.save(repository.create(user));
   }
-
-  async softDelete(id: string): Promise<void> {
-    await this.dataSource
-      .getRepository(User)
-      .update({ id }, { email: null, username: null, password: "", deletedAt: true });
-  }
 }

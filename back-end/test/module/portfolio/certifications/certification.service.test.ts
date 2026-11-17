@@ -284,7 +284,7 @@ test("list rejects a missing or deleted user", async () => {
   repository.findUser.mockResolvedValue(null);
   await expect(service.list(USER_ID, {})).rejects.toMatchObject({ code: "MSG-4" });
 
-  repository.findUser.mockResolvedValue({ id: USER_ID, deletedAt: true } as User);
+  repository.findUser.mockResolvedValue({ id: USER_ID, deletedAt: new Date() } as User);
   await expect(service.list(USER_ID, {})).rejects.toMatchObject({ code: "MSG-4" });
 });
 

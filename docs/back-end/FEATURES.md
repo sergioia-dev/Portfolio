@@ -5,6 +5,7 @@
 | PORTFOLIO_CREATE | Can create a new object in the user owns account with this functionality |
 | PORTFOLIO_UPDATE | Can edit a object of the user owns account |
 | PORTFOLIO_DELETE | Can delete a user owns object |
+| ADMINISTRATOR | Can search users and update or soft delete accounts of users who do not have the ADMINISTRATOR feature |
 
 
 
