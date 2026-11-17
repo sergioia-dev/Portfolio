@@ -1,6 +1,8 @@
 import type { Request, RequestHandler, Response } from "express";
 import AdministrationController, {
   requireFeature,
+  serializeFunctionality,
+  serializeRole,
   serializeUser,
 } from "../../../src/module/administration/controller/administration.controller";
 import {
@@ -40,10 +42,30 @@ const createResponse = () => {
   return response;
 };
 
+const functionality = (overrides: Record<string, unknown> = {}) => ({
+  id: "9b1e3a1e-3b1e-4a1e-9a1e-2f1c9f2e0c3b",
+  name: "BLOG_EDITOR",
+  description: "Edits blogs",
+  ...overrides,
+});
+
+const role = (overrides: Record<string, unknown> = {}) => ({
+  id: "1b4c5d6e-7f80-4a1e-9a1e-2f1c9f2e0c3b",
+  name: "EDITOR",
+  description: "Content editors",
+  functionalities: [functionality()],
+  ...overrides,
+});
+
 const createService = () => ({
   search: jest.fn(),
   update: jest.fn(),
   softDelete: jest.fn(),
+  listRoles: jest.fn(),
+  listFunctionalities: jest.fn(),
+  createRole: jest.fn(),
+  updateRole: jest.fn(),
+  deleteRole: jest.fn(),
 });
 
 const createMessageRepository = () => ({ getMessage: jest.fn() });
@@ -315,5 +337,136 @@ test("the router declares the administration routes", () => {
     stack
       .filter((layer) => layer.route)
       .map((layer) => `${Object.keys(layer.route?.methods ?? {})[0]} ${layer.route?.path}`),
-  ).toEqual(["get /", "patch /:userId", "delete /:userId"]);
+  ).toEqual([
+    "get /",
+    "get /roles",
+    "post /roles",
+    "put /roles/:roleId",
+    "delete /roles/:roleId",
+    "get /functionalities",
+    "patch /:userId",
+    "delete /:userId",
+  ]);
+});
+
+test("serializeRole and serializeFunctionality expose the documented shape", () => {
+  expect(serializeFunctionality(functionality() as never)).toEqual({
+    id: "9b1e3a1e-3b1e-4a1e-9a1e-2f1c9f2e0c3b",
+    name: "BLOG_EDITOR",
+    description: "Edits blogs",
+  });
+  expect(serializeRole(role() as never)).toEqual({
+    id: "1b4c5d6e-7f80-4a1e-9a1e-2f1c9f2e0c3b",
+    name: "EDITOR",
+    description: "Content editors",
+    functionalities: [
+      {
+        id: "9b1e3a1e-3b1e-4a1e-9a1e-2f1c9f2e0c3b",
+        name: "BLOG_EDITOR",
+        description: "Edits blogs",
+      },
+    ],
+  });
+});
+
+test("listRoles responds 200 with the serialized roles", async () => {
+  const { controller, service } = buildController();
+  const response = createResponse();
+  service.listRoles.mockResolvedValue([role()]);
+
+  await call(controller.listRoles, { userId: USER_ID, query: {} }, response);
+
+  expect(response.status).toHaveBeenCalledWith(200);
+  expect(response.json).toHaveBeenCalledWith({ items: [serializeRole(role() as never)] });
+});
+
+test("listFunctionalities responds 200 with the serialized functionalities", async () => {
+  const { controller, service } = buildController();
+  const response = createResponse();
+  service.listFunctionalities.mockResolvedValue([functionality()]);
+
+  await call(controller.listFunctionalities, { userId: USER_ID, query: {} }, response);
+
+  expect(response.status).toHaveBeenCalledWith(200);
+  expect(response.json).toHaveBeenCalledWith({
+    items: [serializeFunctionality(functionality() as never)],
+  });
+});
+
+test("createRole responds 201 with the created role", async () => {
+  const { controller, service } = buildController();
+  const response = createResponse();
+  const body = { name: "EDITOR", description: "Content editors", functionality_ids: [] };
+  service.createRole.mockResolvedValue(role());
+
+  await call(controller.createRole, { userId: USER_ID, body, query: {} }, response);
+
+  expect(service.createRole).toHaveBeenCalledWith(body);
+  expect(response.status).toHaveBeenCalledWith(201);
+  expect(response.json).toHaveBeenCalledWith(serializeRole(role() as never));
+});
+
+test("updateRole passes the path id, body and caller to the service", async () => {
+  const { controller, service } = buildController();
+  const response = createResponse();
+  const body = { name: "REVIEWER", description: "Reviews", functionality_ids: [] };
+  service.updateRole.mockResolvedValue(role());
+
+  await call(
+    controller.updateRole,
+    {
+      userId: USER_ID,
+      params: { roleId: "1b4c5d6e-7f80-4a1e-9a1e-2f1c9f2e0c3b" },
+      body,
+      query: {},
+    },
+    response,
+  );
+
+  expect(service.updateRole).toHaveBeenCalledWith(
+    "1b4c5d6e-7f80-4a1e-9a1e-2f1c9f2e0c3b",
+    body,
+    USER_ID,
+  );
+  expect(response.status).toHaveBeenCalledWith(200);
+  expect(response.json).toHaveBeenCalledWith(serializeRole(role() as never));
+});
+
+test("deleteRole responds 204 without a body", async () => {
+  const { controller, service } = buildController();
+  const response = createResponse();
+  service.deleteRole.mockResolvedValue(undefined);
+
+  await call(
+    controller.deleteRole,
+    { userId: USER_ID, params: { roleId: "1b4c5d6e-7f80-4a1e-9a1e-2f1c9f2e0c3b" }, query: {} },
+    response,
+  );
+
+  expect(service.deleteRole).toHaveBeenCalledWith("1b4c5d6e-7f80-4a1e-9a1e-2f1c9f2e0c3b");
+  expect(response.status).toHaveBeenCalledWith(204);
+  expect(response.send).toHaveBeenCalledWith();
+  expect(response.json).not.toHaveBeenCalled();
+});
+
+test("role handlers reject a request without an authenticated user", async () => {
+  const { controller, service } = buildController();
+  const response = createResponse();
+
+  for (const handler of [
+    controller.listRoles,
+    controller.listFunctionalities,
+    controller.createRole,
+    controller.updateRole,
+    controller.deleteRole,
+  ]) {
+    await call(handler, { params: {}, body: {}, query: {} }, response);
+  }
+
+  expect(service.listRoles).not.toHaveBeenCalled();
+  expect(service.listFunctionalities).not.toHaveBeenCalled();
+  expect(service.createRole).not.toHaveBeenCalled();
+  expect(service.updateRole).not.toHaveBeenCalled();
+  expect(service.deleteRole).not.toHaveBeenCalled();
+  expect(response.status).toHaveBeenCalledWith(401);
 });

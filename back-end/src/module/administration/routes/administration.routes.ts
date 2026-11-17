@@ -17,6 +17,23 @@ export const administrationRouter = (
   const administrator = requireFeature("ADMINISTRATOR", messageRepository);
 
   router.get("/", authenticated, administrator, controller.search);
+  router.get("/roles", authenticated, administrator, controller.listRoles);
+  router.post(
+    "/roles",
+    requireJson(messageRepository),
+    authenticated,
+    administrator,
+    controller.createRole,
+  );
+  router.put(
+    "/roles/:roleId",
+    requireJson(messageRepository),
+    authenticated,
+    administrator,
+    controller.updateRole,
+  );
+  router.delete("/roles/:roleId", authenticated, administrator, controller.deleteRole);
+  router.get("/functionalities", authenticated, administrator, controller.listFunctionalities);
   router.patch(
     "/:userId",
     requireJson(messageRepository),

@@ -1,4 +1,6 @@
 import type { Request, RequestHandler, Response } from "express";
+import type Functionality from "../../../shared/database/user/functionality.entity";
+import type Role from "../../../shared/database/user/role.entity";
 import type User from "../../../shared/database/user/user.entity";
 import type { AuthenticatedRequest } from "../../auth/controller/auth.controller";
 import type MessageRepository from "../../auth/repository/message.repository";
@@ -60,6 +62,19 @@ export const serializeUser = (user: User) => ({
         business_email: user.information.businessEmail,
       }
     : null,
+});
+
+export const serializeFunctionality = (functionality: Functionality) => ({
+  id: functionality.id,
+  name: functionality.name,
+  description: functionality.description,
+});
+
+export const serializeRole = (role: Role) => ({
+  id: role.id,
+  name: role.name,
+  description: role.description,
+  functionalities: role.functionalities.map(serializeFunctionality),
 });
 
 export const requireFeature = (
@@ -125,6 +140,56 @@ export default class AdministrationController {
       requireUserId(request);
       await this.service.softDelete(request.params.userId);
       response.status(204).send();
+    } catch (error) {
+      await this.sendError(error, readLanguage(request), response);
+    }
+  };
+
+  listRoles: RequestHandler = async (request, response) => {
+    try {
+      requireUserId(request);
+      const roles = await this.service.listRoles();
+      response.status(200).json({ items: roles.map(serializeRole) });
+    } catch (error) {
+      await this.sendError(error, readLanguage(request), response);
+    }
+  };
+
+  createRole: RequestHandler = async (request, response) => {
+    try {
+      requireUserId(request);
+      const role = await this.service.createRole(request.body);
+      response.status(201).json(serializeRole(role));
+    } catch (error) {
+      await this.sendError(error, readLanguage(request), response);
+    }
+  };
+
+  updateRole: RequestHandler = async (request, response) => {
+    try {
+      const callerUserId = requireUserId(request);
+      const role = await this.service.updateRole(request.params.roleId, request.body, callerUserId);
+      response.status(200).json(serializeRole(role));
+    } catch (error) {
+      await this.sendError(error, readLanguage(request), response);
+    }
+  };
+
+  deleteRole: RequestHandler = async (request, response) => {
+    try {
+      requireUserId(request);
+      await this.service.deleteRole(request.params.roleId);
+      response.status(204).send();
+    } catch (error) {
+      await this.sendError(error, readLanguage(request), response);
+    }
+  };
+
+  listFunctionalities: RequestHandler = async (request, response) => {
+    try {
+      requireUserId(request);
+      const functionalities = await this.service.listFunctionalities();
+      response.status(200).json({ items: functionalities.map(serializeFunctionality) });
     } catch (error) {
       await this.sendError(error, readLanguage(request), response);
     }

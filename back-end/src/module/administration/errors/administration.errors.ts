@@ -52,3 +52,39 @@ export const missingField = (field: string): AdministrationError =>
 
 export const invalidQueryParam = (): AdministrationError =>
   new AdministrationError("INVALID_QUERY_PARAM", 400, "Invalid query parameter.");
+
+export const invalidId = (): AdministrationError =>
+  new AdministrationError(
+    "INVALID_ID",
+    400,
+    "Invalid identifier. It must be a well-formed identifier.",
+  );
+
+export const invalidName = (): AdministrationError =>
+  new AdministrationError(
+    "INVALID_NAME",
+    400,
+    "Invalid name. It must be non-blank and contain no control characters.",
+  );
+
+export const invalidDescription = (): AdministrationError =>
+  new AdministrationError("INVALID_DESCRIPTION", 400, "Invalid description.");
+
+export const roleNotFound = (): AdministrationError =>
+  new AdministrationError("MSG-10", 404, "Role not found.");
+
+export const functionalityNotFound = (): AdministrationError =>
+  new AdministrationError("MSG-10", 404, "Functionality not found.");
+
+export const roleNameTaken = (): AdministrationError =>
+  new AdministrationError("MSG-13", 409, "A role with this name already exists.");
+
+export const roleInUse = (): AdministrationError =>
+  new AdministrationError(
+    "INVALID_FIELD",
+    409,
+    "The role is assigned to one or more users and cannot be deleted.",
+  );
+
+export const roleGrantsAdministrator = (): AdministrationError =>
+  new AdministrationError("MSG-5", 403, "You do not have permission to perform this action.");

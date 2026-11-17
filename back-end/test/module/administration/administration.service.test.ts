@@ -25,6 +25,27 @@ const administrator = (overrides: Record<string, unknown> = {}) =>
     ...overrides,
   });
 
+const functionality = (overrides: Record<string, unknown> = {}) => ({
+  id: OTHER_ID,
+  name: "BLOG_EDITOR",
+  description: "Edits blogs",
+  ...overrides,
+});
+
+const role = (overrides: Record<string, unknown> = {}) => ({
+  id: OTHER_ID,
+  name: "EDITOR",
+  description: "Content editors",
+  functionalities: [functionality()],
+  ...overrides,
+});
+
+const administratorRole = () =>
+  role({
+    name: "ADMIN",
+    functionalities: [functionality({ id: "feature-id", name: "ADMINISTRATOR" })],
+  });
+
 const createRepository = () => ({
   searchUsers: jest.fn().mockResolvedValue({ items: [user()], total: 1 }),
   findByIdWithRoleAndFeatures: jest.fn().mockResolvedValue(user()),
@@ -32,6 +53,14 @@ const createRepository = () => ({
   findByEmail: jest.fn().mockResolvedValue(null),
   updateAccount: jest.fn().mockResolvedValue(undefined),
   softDelete: jest.fn().mockResolvedValue(undefined),
+  listRoles: jest.fn().mockResolvedValue([role()]),
+  listFunctionalitiesExcludingAdministrator: jest.fn().mockResolvedValue([functionality()]),
+  findRoleById: jest.fn().mockResolvedValue(role()),
+  findFunctionalities: jest.fn().mockResolvedValue([functionality()]),
+  countUsersByRole: jest.fn().mockResolvedValue(0),
+  createRole: jest.fn().mockResolvedValue(undefined),
+  updateRole: jest.fn().mockResolvedValue(undefined),
+  deleteRole: jest.fn().mockResolvedValue(undefined),
 });
 
 const buildService = () => {
@@ -236,4 +265,271 @@ test("softDelete rejects a malformed id", async () => {
   await expect(service.softDelete("not-a-uuid")).rejects.toMatchObject({
     code: "INVALID_USER_ID",
   });
+});
+
+test("update assigns a non-administrator role to the target", async () => {
+  const { service, repository } = buildService();
+
+  await expect(service.update(USER_ID, { rol_id: OTHER_ID })).resolves.toMatchObject({
+    id: USER_ID,
+  });
+  expect(repository.findRoleById).toHaveBeenCalledWith(OTHER_ID);
+  expect(repository.updateAccount).toHaveBeenCalledWith(USER_ID, { rolId: OTHER_ID });
+});
+
+test("update rejects a missing or administrator role", async () => {
+  const { service, repository } = buildService();
+
+  repository.findRoleById.mockResolvedValueOnce(null);
+  await expect(service.update(USER_ID, { rol_id: OTHER_ID })).rejects.toMatchObject({
+    code: "MSG-10",
+    httpStatus: 404,
+  });
+
+  repository.findRoleById.mockResolvedValueOnce(administratorRole());
+  await expect(service.update(USER_ID, { rol_id: OTHER_ID })).rejects.toMatchObject({
+    code: "MSG-5",
+    httpStatus: 403,
+  });
+  expect(repository.updateAccount).not.toHaveBeenCalled();
+});
+
+test("listRoles and listFunctionalities delegate to the repository", async () => {
+  const { service, repository } = buildService();
+
+  await expect(service.listRoles()).resolves.toEqual([role()]);
+  await expect(service.listFunctionalities()).resolves.toEqual([functionality()]);
+  expect(repository.listFunctionalitiesExcludingAdministrator).toHaveBeenCalledTimes(1);
+});
+
+test("createRole stores the role and returns the reloaded row", async () => {
+  const { service, repository } = buildService();
+
+  await expect(
+    service.createRole({
+      name: " EDITOR ",
+      description: " Content editors ",
+      functionality_ids: [OTHER_ID],
+    }),
+  ).resolves.toEqual(role());
+  expect(repository.findFunctionalities).toHaveBeenCalledWith([OTHER_ID]);
+  expect(repository.createRole).toHaveBeenCalledWith({
+    id: expect.any(String),
+    name: "EDITOR",
+    description: "Content editors",
+    functionalityIds: [OTHER_ID],
+  });
+  expect(repository.findRoleById).toHaveBeenCalledWith(expect.any(String));
+});
+
+test("createRole accepts a role without functionalities", async () => {
+  const { service, repository } = buildService();
+
+  await expect(
+    service.createRole({ name: "EDITOR", description: "Content editors" }),
+  ).resolves.toEqual(role());
+  expect(repository.findFunctionalities).not.toHaveBeenCalled();
+  expect(repository.createRole).toHaveBeenCalledWith(
+    expect.objectContaining({ functionalityIds: [] }),
+  );
+});
+
+test("createRole rejects unknown functionalities before writing", async () => {
+  const { service, repository } = buildService();
+  repository.findFunctionalities.mockResolvedValueOnce([]);
+
+  await expect(
+    service.createRole({
+      name: "EDITOR",
+      description: "Content editors",
+      functionality_ids: [OTHER_ID],
+    }),
+  ).rejects.toMatchObject({ code: "MSG-10", httpStatus: 404 });
+  expect(repository.createRole).not.toHaveBeenCalled();
+});
+
+test("createRole maps a duplicate name and rethrows unrelated failures", async () => {
+  const { service, repository } = buildService();
+  repository.createRole.mockRejectedValueOnce({
+    code: "23505",
+    detail: "Key (name)=(EDITOR) already exists.",
+  });
+  await expect(
+    service.createRole({ name: "EDITOR", description: "Content editors" }),
+  ).rejects.toMatchObject({ code: "MSG-13", httpStatus: 409 });
+
+  const failure = new Error("database down");
+  repository.createRole.mockRejectedValueOnce(failure);
+  await expect(service.createRole({ name: "EDITOR", description: "Content editors" })).rejects.toBe(
+    failure,
+  );
+});
+
+test("createRole reports MSG-10 when the created row disappears", async () => {
+  const { service, repository } = buildService();
+  repository.findRoleById.mockResolvedValueOnce(null);
+
+  await expect(
+    service.createRole({ name: "EDITOR", description: "Content editors" }),
+  ).rejects.toMatchObject({
+    code: "MSG-10",
+  });
+});
+
+test("updateRole replaces the name, description and functionalities", async () => {
+  const { service, repository } = buildService();
+
+  await expect(
+    service.updateRole(
+      OTHER_ID,
+      { name: "REVIEWER", description: "Reviews content", functionality_ids: [OTHER_ID] },
+      USER_ID,
+    ),
+  ).resolves.toEqual(role());
+  expect(repository.updateRole).toHaveBeenCalledWith(OTHER_ID, {
+    name: "REVIEWER",
+    description: "Reviews content",
+    functionalityIds: [OTHER_ID],
+  });
+});
+
+test("updateRole validates the id, the target and the functionalities", async () => {
+  const { service, repository } = buildService();
+
+  await expect(
+    service.updateRole(
+      "not-a-uuid",
+      { name: "REVIEWER", description: "Reviews", functionality_ids: [] },
+      USER_ID,
+    ),
+  ).rejects.toMatchObject({ code: "INVALID_ID" });
+
+  repository.findRoleById.mockResolvedValueOnce(null);
+  await expect(
+    service.updateRole(
+      OTHER_ID,
+      { name: "REVIEWER", description: "Reviews", functionality_ids: [] },
+      USER_ID,
+    ),
+  ).rejects.toMatchObject({ code: "MSG-10" });
+
+  repository.findFunctionalities.mockResolvedValueOnce([]);
+  await expect(
+    service.updateRole(
+      OTHER_ID,
+      { name: "REVIEWER", description: "Reviews", functionality_ids: [USER_ID] },
+      USER_ID,
+    ),
+  ).rejects.toMatchObject({ code: "MSG-10" });
+  expect(repository.updateRole).not.toHaveBeenCalled();
+});
+
+test("updateRole blocks detaching ADMINISTRATOR from the caller's own role", async () => {
+  const { service, repository } = buildService();
+  repository.findRoleById.mockResolvedValueOnce(administratorRole());
+  repository.findByIdWithRoleAndFeatures.mockResolvedValueOnce(
+    user({ rol: { id: OTHER_ID, name: "ADMIN", functionalities: [] } }),
+  );
+
+  await expect(
+    service.updateRole(
+      OTHER_ID,
+      { name: "ADMIN", description: "Admins", functionality_ids: [] },
+      USER_ID,
+    ),
+  ).rejects.toMatchObject({ code: "MSG-5", httpStatus: 403 });
+  expect(repository.updateRole).not.toHaveBeenCalled();
+});
+
+test("updateRole allows detaching ADMINISTRATOR from another role", async () => {
+  const { service, repository } = buildService();
+  repository.findRoleById.mockResolvedValueOnce(administratorRole());
+  repository.findByIdWithRoleAndFeatures.mockResolvedValueOnce(
+    user({ rol: { id: USER_ID, name: "ADMIN", functionalities: [] } }),
+  );
+
+  await expect(
+    service.updateRole(
+      OTHER_ID,
+      { name: "ADMIN", description: "Admins", functionality_ids: [] },
+      USER_ID,
+    ),
+  ).resolves.toEqual(role());
+  expect(repository.updateRole).toHaveBeenCalledWith(OTHER_ID, {
+    name: "ADMIN",
+    description: "Admins",
+    functionalityIds: [],
+  });
+});
+
+test("updateRole keeps ADMINISTRATOR when the new functionalities include it", async () => {
+  const { service, repository } = buildService();
+  repository.findRoleById.mockResolvedValueOnce(administratorRole());
+
+  await expect(
+    service.updateRole(
+      OTHER_ID,
+      {
+        name: "ADMIN",
+        description: "Admins",
+        functionality_ids: ["3c2d1e0f-4a5b-4c6d-8e9f-0a1b2c3d4e5f"],
+      },
+      USER_ID,
+    ),
+  ).resolves.toEqual(role());
+  expect(repository.updateRole).toHaveBeenCalled();
+});
+
+test("updateRole maps a duplicate name, rethrows failures and reports a vanished row", async () => {
+  const { service, repository } = buildService();
+  const body = { name: "REVIEWER", description: "Reviews", functionality_ids: [] };
+  repository.updateRole.mockRejectedValueOnce({
+    code: "23505",
+    detail: "Key (name)=(REVIEWER) already exists.",
+  });
+  await expect(service.updateRole(OTHER_ID, body, USER_ID)).rejects.toMatchObject({
+    code: "MSG-13",
+  });
+
+  const failure = new Error("database down");
+  repository.updateRole.mockRejectedValueOnce(failure);
+  await expect(service.updateRole(OTHER_ID, body, USER_ID)).rejects.toBe(failure);
+
+  repository.findRoleById.mockResolvedValueOnce(role()).mockResolvedValueOnce(null);
+  await expect(service.updateRole(OTHER_ID, body, USER_ID)).rejects.toMatchObject({
+    code: "MSG-10",
+  });
+});
+
+test("deleteRole removes an unused, non-administrator role", async () => {
+  const { service, repository } = buildService();
+
+  await expect(service.deleteRole(OTHER_ID)).resolves.toBeUndefined();
+  expect(repository.countUsersByRole).toHaveBeenCalledWith(OTHER_ID);
+  expect(repository.deleteRole).toHaveBeenCalledWith(OTHER_ID);
+});
+
+test("deleteRole rejects a malformed id and a missing role", async () => {
+  const { service, repository } = buildService();
+
+  await expect(service.deleteRole("not-a-uuid")).rejects.toMatchObject({ code: "INVALID_ID" });
+  repository.findRoleById.mockResolvedValueOnce(null);
+  await expect(service.deleteRole(OTHER_ID)).rejects.toMatchObject({ code: "MSG-10" });
+  expect(repository.deleteRole).not.toHaveBeenCalled();
+});
+
+test("deleteRole refuses administrator roles and roles still in use", async () => {
+  const { service, repository } = buildService();
+  repository.findRoleById.mockResolvedValueOnce(administratorRole());
+  await expect(service.deleteRole(OTHER_ID)).rejects.toMatchObject({
+    code: "MSG-5",
+    httpStatus: 403,
+  });
+
+  repository.countUsersByRole.mockResolvedValueOnce(2);
+  await expect(service.deleteRole(OTHER_ID)).rejects.toMatchObject({
+    code: "INVALID_FIELD",
+    httpStatus: 409,
+  });
+  expect(repository.deleteRole).not.toHaveBeenCalled();
 });
