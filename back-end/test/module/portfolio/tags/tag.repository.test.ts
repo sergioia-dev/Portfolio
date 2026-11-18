@@ -1,5 +1,7 @@
 import type { DataSource } from "typeorm";
 import TagRepository from "../../../../src/module/portfolio/tags/repository/tag.repository";
+import Article from "../../../../src/shared/database/article/article.entity";
+import Project from "../../../../src/shared/database/project/project.entity";
 import Tag from "../../../../src/shared/database/tag/tag.entity";
 import User from "../../../../src/shared/database/user/user.entity";
 
@@ -16,15 +18,34 @@ const createRepositories = () => {
     delete: jest.fn(async () => ({ affected: 1 })),
   };
   const user = { findOne: jest.fn() };
+  const project = { count: jest.fn().mockResolvedValue(0) };
+  const articleQuery = {
+    innerJoin: jest.fn(),
+    where: jest.fn(),
+    getCount: jest.fn().mockResolvedValue(0),
+  };
+  articleQuery.innerJoin.mockReturnValue(articleQuery);
+  articleQuery.where.mockReturnValue(articleQuery);
+  const article = { createQueryBuilder: jest.fn(() => articleQuery) };
 
   const repositories: Record<string, unknown> = {
     [Tag.name]: tag,
     [User.name]: user,
+    [Project.name]: project,
+    [Article.name]: article,
   };
   const getRepository = jest.fn((entity: { name: string }) => repositories[entity.name]);
   const dataSource = { getRepository } as unknown as DataSource;
 
-  return { repository: new TagRepository(dataSource), tag, user, getRepository };
+  return {
+    repository: new TagRepository(dataSource),
+    tag,
+    user,
+    project,
+    article,
+    articleQuery,
+    getRepository,
+  };
 };
 
 test("findById looks a tag up by id", async () => {
@@ -125,4 +146,19 @@ test("findUser loads the user", async () => {
   await expect(repository.findUser(USER_ID)).resolves.toEqual({ id: USER_ID });
   expect(getRepository).toHaveBeenCalledWith(User);
   expect(user.findOne).toHaveBeenCalledWith({ where: { id: USER_ID } });
+});
+
+test("countUsages sums project and active article links", async () => {
+  const { repository, project, articleQuery } = createRepositories();
+  project.count.mockResolvedValue(2);
+  articleQuery.getCount.mockResolvedValue(3);
+
+  await expect(repository.countUsages(TAG_ID)).resolves.toBe(5);
+  expect(project.count).toHaveBeenCalledWith({ where: { tags: { id: TAG_ID } } });
+  expect(articleQuery.innerJoin).toHaveBeenCalledWith("article.tags", "tag", "tag.id = :id", {
+    id: TAG_ID,
+  });
+  expect(articleQuery.where).toHaveBeenCalledWith("article.isDeleted = :isDeleted", {
+    isDeleted: false,
+  });
 });

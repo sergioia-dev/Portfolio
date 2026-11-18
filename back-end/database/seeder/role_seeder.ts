@@ -7,11 +7,14 @@ const ROLES = [
   { name: "VISITOR", description: "Visitor role" },
   { name: "OWNER", description: "Owner role with portfolio management features" },
   { name: "ADMIN", description: "Administrator role with user administration features" },
+  { name: "WRITER", description: "Writer role with article management features" },
 ];
 
 const ROLE_FUNCTIONALITIES: Record<string, string[]> = {
+  VISITOR: ["VISITOR"],
   OWNER: ["PORTFOLIO_CREATE", "PORTFOLIO_UPDATE", "PORTFOLIO_DELETE"],
   ADMIN: ["ADMINISTRATOR"],
+  WRITER: ["ARTICLE_CREATE", "ARTICLE_UPDATE", "ARTICLE_DELETE"],
 };
 
 const seedRoles = async (dataSource: DataSource) => {

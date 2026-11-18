@@ -9,6 +9,7 @@ import {
   invalidField,
   preconditionFailed,
   type TagError,
+  tagInUse,
   tagNameTaken,
   tagNotFound,
   userNotFound,
@@ -146,6 +147,9 @@ export default class TagService {
 
   async remove(userId: string, id: string): Promise<void> {
     const tag = await this.findOwnedTag(userId, id);
+    if ((await this.repository.countUsages(id)) > 0) {
+      throw tagInUse();
+    }
     await this.repository.hardDelete(id);
     await this.removeStoredImage(tag.imageUrl);
   }

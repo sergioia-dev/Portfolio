@@ -23,6 +23,7 @@ const createRepository = () => ({
   create: jest.fn(async (input: unknown) => input),
   saveFields: jest.fn().mockResolvedValue(undefined),
   hardDelete: jest.fn().mockResolvedValue(undefined),
+  countUsages: jest.fn().mockResolvedValue(0),
   findPage: jest.fn().mockResolvedValue({ items: [tag()], total: 1 }),
   findOneForUser: jest.fn().mockResolvedValue(tag()),
   findUser: jest.fn().mockResolvedValue({ id: USER_ID, deletedAt: null }),
@@ -265,6 +266,15 @@ test("remove does not delete the image when the tag has none", async () => {
 
   await service.remove(USER_ID, TAG_ID);
 
+  expect(storage.deleteObject).not.toHaveBeenCalled();
+});
+
+test("remove rejects a tag used by projects or articles", async () => {
+  const { service, repository, storage } = buildService();
+  repository.countUsages.mockResolvedValue(1);
+
+  await expect(service.remove(USER_ID, TAG_ID)).rejects.toMatchObject({ code: "MSG-15" });
+  expect(repository.hardDelete).not.toHaveBeenCalled();
   expect(storage.deleteObject).not.toHaveBeenCalled();
 });
 

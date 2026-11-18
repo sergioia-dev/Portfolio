@@ -20,6 +20,22 @@ const FUNCTIONALITIES = [
     description:
       "Can search users and update or soft delete accounts of users who do not have the ADMINISTRATOR feature",
   },
+  {
+    name: "ARTICLE_CREATE",
+    description: "Can create a new article in the user's own account",
+  },
+  {
+    name: "ARTICLE_UPDATE",
+    description: "Can edit an article owned by the user's account",
+  },
+  {
+    name: "ARTICLE_DELETE",
+    description: "Can soft delete an article owned by the user's account",
+  },
+  {
+    name: "VISITOR",
+    description: "Can make commends/edit/delete their own commends in the articles of others",
+  },
 ];
 
 const seedFunctionalities = async (dataSource: DataSource) => {

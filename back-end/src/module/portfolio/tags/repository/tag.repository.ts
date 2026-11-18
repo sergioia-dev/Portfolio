@@ -1,4 +1,6 @@
 import { type DataSource, type FindOptionsWhere, Not, Raw } from "typeorm";
+import Article from "../../../../shared/database/article/article.entity";
+import Project from "../../../../shared/database/project/project.entity";
 import Tag from "../../../../shared/database/tag/tag.entity";
 import User from "../../../../shared/database/user/user.entity";
 
@@ -38,6 +40,19 @@ export default class TagRepository {
 
   async hardDelete(id: string): Promise<void> {
     await this.repository.delete({ id });
+  }
+
+  async countUsages(id: string): Promise<number> {
+    const projects = await this.dataSource.getRepository(Project).count({
+      where: { tags: { id } },
+    });
+    const articles = await this.dataSource
+      .getRepository(Article)
+      .createQueryBuilder("article")
+      .innerJoin("article.tags", "tag", "tag.id = :id", { id })
+      .where("article.isDeleted = :isDeleted", { isDeleted: false })
+      .getCount();
+    return projects + articles;
   }
 
   async findPage(userId: string, query: PageQuery): Promise<{ items: Tag[]; total: number }> {

@@ -6,6 +6,14 @@ import AdministrationController from "./module/administration/controller/adminis
 import AdministrationRepository from "./module/administration/repository/administration.repository";
 import { administrationRouter } from "./module/administration/routes/administration.routes";
 import AdministrationService from "./module/administration/service/administration.service";
+import ArticleController from "./module/articles/controller/article.controller";
+import CommentController from "./module/articles/controller/comment.controller";
+import ArticleRepository from "./module/articles/repository/article.repository";
+import CommentRepository from "./module/articles/repository/comment.repository";
+import { articleRouter } from "./module/articles/routes/article.routes";
+import { commentRouter } from "./module/articles/routes/comment.routes";
+import ArticleService from "./module/articles/service/article.service";
+import CommentService from "./module/articles/service/comment.service";
 import AuthController from "./module/auth/controller/auth.controller";
 import AuthRepository from "./module/auth/repository/auth.repository";
 import MessageRepository from "./module/auth/repository/message.repository";
@@ -75,6 +83,14 @@ const administrationController = new AdministrationController(
   new AdministrationService(new AdministrationRepository(dataSource)),
   messageRepository,
 );
+const articleController = new ArticleController(
+  new ArticleService(new ArticleRepository(dataSource)),
+  messageRepository,
+);
+const commentController = new CommentController(
+  new CommentService(new CommentRepository(dataSource)),
+  messageRepository,
+);
 
 app.use(
   cors({
@@ -101,5 +117,7 @@ app.use(tagRouter(tagController, jwt, messageRepository, userRepository));
 app.use(certificationRouter(certificationController, jwt, messageRepository, userRepository));
 app.use(projectRouter(projectController, jwt, messageRepository, userRepository));
 app.use(contributionRouter(contributionController, jwt, messageRepository, userRepository));
+app.use(articleRouter(articleController, jwt, messageRepository, userRepository));
+app.use(commentRouter(commentController, jwt, messageRepository, userRepository));
 
 export default app;
